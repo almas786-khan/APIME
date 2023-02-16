@@ -1,42 +1,41 @@
 import React from 'react'
-import logo from './iconn.svg'
-import { Link } from 'react-router-dom'
+import logo from '../assets/iconn.svg'
 
 import { FaTimes } from 'react-icons/fa'
-import { links } from './data'
+import { links } from '../data'
 import styled from 'styled-components'
 
 
 
 const Sidebar = () => {
-    const isSidebarOpen = false
+  const isSidebarOpen = false
 
-    return (
-        <SidebarContainer>
-            <aside
-                className={`${isSidebarOpen ? 'sidebar show-sidebar' : 'sidebar'}`}
-            >
-                <div className='sidebar-header'>
-                    <img src={logo} className='logo' alt='apime' />
-                    <button className='close-btn' type='button' >
-                        <FaTimes />
-                    </button>
-                </div>
-                <ul className='links'>
-                    {links.map(({ id, text, url, icon }) => {
-                        return (
-                            <li key={id}>
-                                <a href={url} >
-                                    {icon} {text}
-                                </a>
-                            </li>
-                        )
-                    })}
+  return (
+    <SidebarContainer>
+      <aside
+        className={`${isSidebarOpen ? 'sidebar show-sidebar' : 'sidebar'}`}
+      >
+        <div className='sidebar-header'>
+          <img src={logo} className='logo' alt='apime' />
+          <button className='close-btn' type='button' >
+            <FaTimes />
+          </button>
+        </div>
+        <ul className='links'>
+          {links.map(({ id, text, url, icon }) => {
+            return (
+              <li key={id}>
+                <a href={url} >
+                  {icon} {text}
+                </a>
+              </li>
+            )
+          })}
 
-                </ul>
-            </aside>
-        </SidebarContainer>
-    )
+        </ul>
+      </aside>
+    </SidebarContainer>
+  )
 }
 
 const SidebarContainer = styled.div`

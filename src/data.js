@@ -1,6 +1,7 @@
 import React from 'react'
 import { FaHome, FaUser } from "react-icons/fa"
-import { GoDeviceCameraVideo } from "react-icons/go";
+import { GoDeviceCameraVideo, GoBook } from "react-icons/go";
+
 import { BiLogIn } from "react-icons/bi";
 
 export const links = [
@@ -18,12 +19,18 @@ export const links = [
     },
     {
         id: 3,
+        url: '/documentation',
+        text: 'Documentation',
+        icon: <GoBook />
+    },
+    {
+        id: 4,
         url: '/login',
         text: 'Login',
         icon: <BiLogIn />
     },
     {
-        id: 4,
+        id: 5,
         url: '/signup',
         text: 'Signup',
         icon: <FaUser />
@@ -31,5 +38,5 @@ export const links = [
 
 ]
 
-export const movies_url = 'http://localhost:5000/apime/movies'
-export const single_movie_url = 'http://localhost:5000/apime/movies/:id'
+export const movies_url = 'http://localhost:3500/apime/movies'
+export const single_movie_url = 'http://localhost:3500/apime/movies/:id'

@@ -1,36 +1,38 @@
 import React from 'react'
 import styled from 'styled-components'
-import { PageHero } from '../PageHero'
-import homeImg from '../oldCamera.jpg'
+import { Link } from 'react-router-dom'
+import homeImg from '../assets/oldCamera.jpg'
+
 
 const HomePage = () => {
   return (
-    <main>
-      <PageHero title='home' />
+
+    <>
+
       <Wrapper className='page section section-center'>
         <img src={homeImg} alt='camera' />
         <article>
           <div className='title'>
-            <h2>our story</h2>
+            <h2>APIMe!!!</h2>
             <div className='underline'></div>
           </div>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam
-            quaerat, modi doloremque necessitatibus eum dolor nesciunt delectus,
-            voluptate blanditiis, obcaecati beatae ab aut ipsa consequuntur
-            tempora cumque. Ut quo enim vero odio minus nostrum eveniet,
-            doloribus veritatis dolorem unde ipsum, voluptatibus totam.
-            Explicabo, quas libero! Laborum incidunt minima consequatur ratione?
+            APIMe! will provide a learning tool for students in the SQA courses and programs at Conestoga College.
+            The web application will allow students to create accounts and log in to the system, and could also
+            be used to restrict access to certain parts of the website.
+            Moreover, the publicly available API will allow students to select HTTP request
+            methods and receive response codes for the purpose of practicing their skills in API testing.
           </p>
         </article>
       </Wrapper>
-    </main>
+    </>
   )
 }
 
 const Wrapper = styled.section`
   display: grid;
   gap: 4rem;
+ 
   img {
     width: 100%;
     display: block;
@@ -43,7 +45,7 @@ const Wrapper = styled.section`
     max-width: 45em;
     margin: 0 auto;
     margin-top: 2rem;
-    color: var(--clr-grey-5);
+    color: var(--clr-rust-1);
   }
   .title {
     text-align: left;

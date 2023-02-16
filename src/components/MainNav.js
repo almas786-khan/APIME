@@ -1,43 +1,43 @@
 import styled from 'styled-components'
-import logo from './iconn.svg'
+import logo from '../assets/iconn.svg'
 import { FaBars } from 'react-icons/fa';
-import { links } from './data'
-import React from 'react';
+import { links } from '../data'
+import React, { useState } from 'react';
 
 
 const MainNav = () => {
+  const [showLinks, setShowLinks] = useState(false)
 
-    return (
-        <nav>
-            <div className='nav-center'>
-                <div className='nav-header'>
-                    <a href='/'><img src={logo} alt="logo" /></a>
+  return (
+    <nav>
+      <div className='nav-center'>
+        <div className='nav-header'>
+          <img src={logo} alt="logo" />
+          <button className='nav-toggle' onClick={() => setShowLinks(!showLinks)}>
+            <FaBars />
+          </button>
+        </div>
 
-                    <button type="button" className='nav-toggle' >
-                        <FaBars />
-                    </button>
-                </div>
-
-                <div className='links-container show-container'>
-                    <ul className='links'>
-                        {links.map((link) => {
-                            const { id, url, text, icon } = link
-                            return (
-                                <li key={id}>
-                                    <a href={url}>{icon} {text}</a>
-                                </li>
-                            )
-                        })}
-                    </ul>
-                </div>
+        <div className='links-container show-container'>
+          <ul className='links'>
+            {links.map((link) => {
+              const { id, url, text, icon } = link
+              return (
+                <li key={id}>
+                  <a href={url}>{icon} {text}</a>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
 
 
-            </div>
-        </nav>
-    )
+      </div>
+    </nav>
+  )
 }
 const nav = styled.nav`
-  height: 5rem;
+   height: 5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -97,9 +97,7 @@ const nav = styled.nav`
         }
       }
     }
-    .cart-btn-wrapper {
-      display: grid;
-    }
+    
   }
 `
 export default MainNav

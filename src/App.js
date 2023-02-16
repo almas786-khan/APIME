@@ -10,6 +10,8 @@ import Documentation from './pages/DocumentationPage'
 import Sidebar from './components/Sidebar';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SingleMoviePage from './pages/SingleMoviePage';
+import Login from './pages/LoginPage';
+import Register from './pages/RegisterPage';
 import React from 'react';
 import "./App.css";
 
@@ -28,9 +30,11 @@ function App() {
           <Route path='/' element={<Home />} />
 
           <Route path='/movies' element={<Movies />} />
-
+          
           <Route path='/movie' element={<SingleMoviePage />} />
           <Route path='/documentation' element={<Documentation />} />
+          <Route path='/login' element={<Login/>}/>
+          <Route path='/register' element={<Register/>}/>
 
           <Route path='*' element={<Error />} />
         </Routes>

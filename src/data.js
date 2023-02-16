@@ -31,8 +31,8 @@ export const links = [
     },
     {
         id: 5,
-        url: '/signup',
-        text: 'Signup',
+        url: '/Register',
+        text: 'Register',
         icon: <FaUser />
     },
 

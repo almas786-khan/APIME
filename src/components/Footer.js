@@ -13,7 +13,11 @@ const Footer = () => {
 }
 
 const Wrapper = styled.footer`
+position: fixed;
+  left: 0;
+  width: 100%;
   height: 5rem;
+  bottom:0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -33,6 +37,7 @@ const Wrapper = styled.footer`
   @media (min-width: 776px) {
     flex-direction: row;
   }
+  
 `
 
 export default Footer

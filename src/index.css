@@ -73,6 +73,9 @@ body {
   color: var(--clr-grey-1);
   line-height: 1.5;
   font-size: 0.875rem;
+  min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 ul {
@@ -323,5 +326,21 @@ nav {
 
   .social-icons a:hover {
     color: var(--clr-primary-7);
+  }
+
+  /* Error message */
+.errmsg{
+  color:wheat;
+  background-color: crimson;
+}
+  /* login page */
+  .loginContainer {
+    padding: 25px;
+    margin-left: 25%;
+    margin-top: 10%;
+    margin-bottom: 5%;
+    width: 50%;
+    box-shadow: 0 1px 2px 1px #ddd;
+    border-radius: 3px;
   }
 }

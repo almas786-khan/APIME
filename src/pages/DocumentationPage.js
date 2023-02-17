@@ -1,8 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import axios from 'axios'
 
-const DocumentationPage = () => {
+const DocumentationPage = ({ use, setUse }) => {
+
+  useEffect(() => {
+    const initializePage = async () => {
+      try {
+        const data = await axios.get('apime/user/userCheck')
+        setUse(data.data.user.username)
+      }
+      catch (error) {
+        console.log(error)
+      }
+    }
+
+    initializePage();
+
+  }, [])
+
   return (
     <Wrapper className='page-100'>
       <section>

@@ -1,14 +1,21 @@
-import { useParams, useHistory } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 
-const single_movie_url = 'http://localhost:3500/apime/movies'
 
-function SingleMoviePage() {
-
+const SingleMoviePage = () => {
+    console.log(useParams());
 
     const { _id } = useParams();
 
-    return (<h1>single page  </h1>)
+    return (
+        <section>
+            <h1>
+                Single movie page {_id}
+            </h1>
+
+            <Link to='/movies'>back to movies</Link>
+        </section>
+
+    )
 };
 
 

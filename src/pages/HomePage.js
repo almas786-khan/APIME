@@ -1,10 +1,31 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 import homeImg from '../assets/oldCamera.jpg'
 
 
-const HomePage = () => {
+const HomePage = ({ use, setUse }) => {
+
+  useEffect(() => {
+    console.log('homepage user: ' + use)
+
+    const initializePage = async () => {
+      try {
+        const data = await axios.get('apime/user/userCheck')
+        setUse(data.data.user.username)
+      }
+      catch (error) {
+        console.log(error)
+      }
+    }
+
+    initializePage();
+
+  }, [])
+
+
+
   return (
 
     <>

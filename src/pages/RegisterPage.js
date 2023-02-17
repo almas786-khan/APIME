@@ -1,6 +1,6 @@
 
-import {useRef, useState,useEffect} from 'react'
-import { Link } from "react-router-dom";
+import { useRef, useState, useEffect } from 'react'
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
 import axios from 'axios';
 
@@ -20,6 +20,7 @@ const Register = () => {
 
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         userRef.current.focus();
@@ -35,27 +36,38 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        if (pwd !== matchPwd){
+
+        if (pwd !== matchPwd) {
             setErrMsg("Password Do Not Match");
-        }else{
+        } else {
             setErrMsg(null);
-           
-             //set configuarations
-            const configuration={
-                headers:{
-                    "Content-type":"application/json",
+
+            //set configuarations
+            const configuration = {
+                headers: {
+                    "Content-type": "application/json",
                 },
-                withCredentials:true
+                withCredentials: true
             };
-            //make api call
-             axios.post("apime/user/register", 
-            JSON.stringify({username:user,password:pwd}),configuration)
-            .then(data => { setSuccess(true);console.log(data);})
-            .catch(error => { setErrMsg(error.response.data.msg); console.log(error)});
+            try {
+                const data = await axios.post("http://localhost:3500/apime/user/register", { username: user, password: pwd })
+                setSuccess(true);
+                console.log(data);
+
+                navigate('/login', { replace: true })
+            }
+            catch (error) {
+                console.log(error)
+                setErrMsg(error.response.data.msg)
+            }
+            // //make api call
+            // const data = await axios.post("http://localhost:3500/apime/user/register",
+            //     JSON.stringify({ username: user, password: pwd }), configuration)
+            //     .then(data => { setSuccess(true); console.log(data); })
+            //     .catch(error => { setErrMsg(error.response.data.msg); console.log(error) });
         }
-      
-        
+
+
     }
 
     return (
@@ -64,66 +76,66 @@ const Register = () => {
                 <Container>
                     <h1>Congratulation, You're signed up!</h1>
                     <h2>
-                    <Link to="/login">Login In Here</Link>
+                        <Link to="/login">Login In Here</Link>
                     </h2>
                 </Container>
             ) : (
                 <Container>
-                     <div className='loginContainer'>
-                    <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-                    <h1>Register</h1>
-                
-                    <Form onSubmit={handleSubmit}>
-                    <Form.Group controlId='username'>
-                        <Form.Label>
-                            Username:
-                        </Form.Label>
-                        <Form.Control
-                            type="text"
-                            ref={userRef}
-                            onChange={(e) => setUser(e.target.value)}
-                            value={user}
-                            onFocus={() => setUserFocus(true)}
-                            onBlur={() => setUserFocus(false)}
-                        />
-                      </Form.Group>
-                      <Form.Group controlId='password'>
-                        <Form.Label>
-                            Password: 
-                        </Form.Label>
-                        <Form.Control
-                            type="password"
-                            onChange={(e) => setPwd(e.target.value)}
-                            value={pwd}
-                            onFocus={() => setPwdFocus(true)}
-                            onBlur={() => setPwdFocus(false)}
-                        />
-                        </Form.Group>
-                        <Form.Group controlId='comfirm_pwd'>
-                        <Form.Label>
-                            Confirm Password:
-                        </Form.Label>
-                        <Form.Control
-                            type="password"
-                            onChange={(e) => setMatchPwd(e.target.value)}
-                            value={matchPwd}
-                            onFocus={() => setMatchFocus(true)}
-                            onBlur={() => setMatchFocus(false)}
-                        />
-                        </Form.Group>
-                        <br />
-                        <Button variant="primary" type="submit">Sign Up</Button>
-                    </Form>
-                    <Row className='py-3'>
-                        <Col>
-                        Already registered? <Link to="/login">Sign In Here</Link>
-                        </Col>
-                    </Row>
+                    <div className='loginContainer'>
+                        <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+                        <h1>Register</h1>
+
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group controlId='username'>
+                                <Form.Label>
+                                    Username:
+                                </Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    ref={userRef}
+                                    onChange={(e) => setUser(e.target.value)}
+                                    value={user}
+                                    onFocus={() => setUserFocus(true)}
+                                    onBlur={() => setUserFocus(false)}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId='password'>
+                                <Form.Label>
+                                    Password:
+                                </Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    onChange={(e) => setPwd(e.target.value)}
+                                    value={pwd}
+                                    onFocus={() => setPwdFocus(true)}
+                                    onBlur={() => setPwdFocus(false)}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId='comfirm_pwd'>
+                                <Form.Label>
+                                    Confirm Password:
+                                </Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    onChange={(e) => setMatchPwd(e.target.value)}
+                                    value={matchPwd}
+                                    onFocus={() => setMatchFocus(true)}
+                                    onBlur={() => setMatchFocus(false)}
+                                />
+                            </Form.Group>
+                            <br />
+                            <Button variant="primary" type="submit">Sign Up</Button>
+                        </Form>
+                        <Row className='py-3'>
+                            <Col>
+                                Already registered? <Link to="/login">Sign In Here</Link>
+                            </Col>
+                        </Row>
                     </div>
                 </Container>
             )}
         </>
-  )
+    )
 }
 
 export default Register

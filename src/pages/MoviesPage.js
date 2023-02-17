@@ -1,17 +1,21 @@
 
 import React, { useState, useEffect } from 'react'
+import SearchBox from '../components/SearchBox'
 import styled from 'styled-components'
 import axios from 'axios'
 import Movie from '../Movie'
 const url = '/apime/movies'
-function MoviesPage() {
+function MoviesPage({ use, setUse }) {
   const [movies, setMovies] = useState([])
+  const [searchValue, setSearchValue] = useState([]);
   useEffect(() => {
     const initializePage = async () => {
       try {
         const { data: { movies } } = await axios.get(url)
         setMovies(movies)
         console.log(movies)
+        const data = await axios.get('apime/user/userCheck')
+        setUse(data.data.user.username)
       }
       catch (error) {
         console.log(error)
@@ -28,6 +32,9 @@ function MoviesPage() {
         <div className='title'>
           <h2>Movies</h2>
           <div className='underline'></div>
+          <div>
+            <SearchBox class="search" searchValue="aaa" />
+          </div>
         </div>
         <div className='section-center featured'>
           {movies.map(mv => (

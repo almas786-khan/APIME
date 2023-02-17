@@ -8,7 +8,7 @@ const Movie = ({ image, title, _id }) => {
     <Wrapper>
       <div className='container'>
         <img src={image} alt={title} />
-        <Link to={`/movie/${_id}`} className='link'>
+        <Link to={`/movies/${_id}`} className='link'>
           <FaSearch />
         </Link>
       </div>

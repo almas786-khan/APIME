@@ -2,11 +2,26 @@ import styled from 'styled-components'
 import logo from '../assets/iconn.svg'
 import { FaBars } from 'react-icons/fa';
 import { links } from '../data'
+import axios from 'axios'
 import React, { useState } from 'react';
 
 
-const MainNav = () => {
+const MainNav = ({ use, setUse }) => {
   const [showLinks, setShowLinks] = useState(false)
+
+  const HandleDoLogout = async (e) => {
+    e.preventDefault()
+    console.log('Logout was clicked')
+    try {
+      const result = await axios.get("/apime/user/logout");
+      setUse('')
+      window.location.href = '/';
+    }
+    catch (error) {
+      console.log(error)
+    }
+
+  }
 
   return (
     <nav>
@@ -14,6 +29,7 @@ const MainNav = () => {
         <div className='nav-header'>
           <img src={logo} alt="logo" />
           <button className='nav-toggle' onClick={() => setShowLinks(!showLinks)}>
+
             <FaBars />
           </button>
         </div>
@@ -22,19 +38,37 @@ const MainNav = () => {
           <ul className='links'>
             {links.map((link) => {
               const { id, url, text, icon } = link
-              return (
-                <li key={id}>
-                  <a href={url}>{icon} {text}</a>
-                </li>
-              )
+              if (id != 4 && id != 5) {
+                return (
+                  <li key={id}>
+                    <a href={url}>{icon} {text}</a>
+                  </li>
+                )
+              }
+              if (use == '' && (id == 4 || id == 5)) {
+                return (
+                  <li key={id}>
+                    <a href={url}>{icon} {text}</a>
+                  </li>
+                )
+              }
+              // else{
+              //   return(
+              //     <li>{usr}</li>
+              //   )
+              // }
             })}
+            {use == '' ? '' : (<>
+              <li><a href=''>Hello {use}</a></li>
+              <li><a href='' onClick={HandleDoLogout}>Logout</a></li>
+            </>)}
+
           </ul>
         </div>
 
 
       </div>
-    </nav>
-  )
+    </nav>)
 }
 const nav = styled.nav`
    height: 5rem;

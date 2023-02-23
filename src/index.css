@@ -74,8 +74,8 @@ body {
   line-height: 1.5;
   font-size: 0.875rem;
   min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 ul {
@@ -278,6 +278,8 @@ nav {
   height: 10rem;
 }
 
+.search-movie-box {}
+
 @media screen and (min-width: 800px) {
   .nav-center {
     max-width: 1170px;
@@ -329,10 +331,11 @@ nav {
   }
 
   /* Error message */
-.errmsg{
-  color:wheat;
-  background-color: crimson;
-}
+  .errmsg {
+    color: wheat;
+    background-color: crimson;
+  }
+
   /* login page */
   .loginContainer {
     padding: 25px;

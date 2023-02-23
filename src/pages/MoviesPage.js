@@ -4,6 +4,7 @@ import SearchBox from '../components/SearchBox'
 import styled from 'styled-components'
 import axios from 'axios'
 import Movie from '../Movie'
+import ListPage from '../components/ListPage'
 const url = '/apime/movies'
 function MoviesPage({ use, setUse }) {
   const [movies, setMovies] = useState([])
@@ -16,6 +17,7 @@ function MoviesPage({ use, setUse }) {
         console.log(movies)
         const data = await axios.get('apime/user/userCheck')
         setUse(data.data.user.username)
+        setSearchValue(movies)
       }
       catch (error) {
         console.log(error)
@@ -23,8 +25,24 @@ function MoviesPage({ use, setUse }) {
     }
 
     initializePage();
+    console.log(searchValue)
 
   }, [])
+
+  const searchHandle = async (event) => {
+    let key = event.target.value;
+    if (key) {
+      let result = await fetch(`http://localhost:3500/apime/movies/?${key}`);
+      result = await result.json()
+      if (result) {
+        setMovies(result)
+      }
+    } else {
+
+    }
+
+
+  }
 
   return (
     <>
@@ -33,7 +51,10 @@ function MoviesPage({ use, setUse }) {
           <h2>Movies</h2>
           <div className='underline'></div>
           <div>
-            <SearchBox class="search" searchValue="aaa" />
+            {/*  <SearchBox movies={movies} setSearchValue={setSearchValue} />
+ */}
+            <input type="" className='search-movie-box' placeholder='Search Movie' name='title'
+              onChange={searchHandle} />
           </div>
         </div>
         <div className='section-center featured'>

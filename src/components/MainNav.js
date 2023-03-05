@@ -3,15 +3,36 @@ import logo from '../assets/iconn.svg'
 import { FaBars } from 'react-icons/fa';
 import { links } from '../data'
 import axios from 'axios'
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 const MainNav = ({ use, setUse }) => {
+
   const [showLinks, setShowLinks] = useState(false)
+  const [currentuser, setCurrentUser] = useState('')
+  // navigate = useNavigate();
+
+  useEffect(() => {
+
+    const initializePage = async () => {
+      try {
+        const data = await axios.get('apime/user/userCheck')
+
+        setCurrentUser(data.data.user.role);
+      }
+      catch (error) {
+        console.log(error)
+      }
+    }
+
+    initializePage();
+
+  })
 
   const HandleDoLogout = async (e) => {
     e.preventDefault()
-    console.log('Logout was clicked')
     try {
       const result = await axios.get("/apime/user/logout");
       setUse('')
@@ -22,6 +43,16 @@ const MainNav = ({ use, setUse }) => {
     }
 
   }
+
+  const HandleAdmin = (e) => {
+    e.preventDefault()
+
+    console.log("inside admin");
+    window.location.href = '/reviews';
+    // navigate('/reviews');
+  }
+
+
 
   return (
     <nav>
@@ -58,10 +89,26 @@ const MainNav = ({ use, setUse }) => {
               //   )
               // }
             })}
-            {use == '' ? '' : (<>
+            {use == '' ? ''
+              : currentuser == 'administrator' ?
+                (<>
+                  <li><a href=''>Hello {use}</a></li>
+                  <li><a href='' onClick={HandleDoLogout}>Logout</a></li>
+                  <li><a href='' onClick={HandleAdmin}>Admin Panel</a></li>
+                </>)
+                : currentuser == 'user' ?
+                  (<>
+                    <li><a href=''>Hello {use}</a></li>
+                    <li><a href='' onClick={HandleDoLogout}>Logout</a></li>
+                  </>)
+                  : ''
+            }
+
+
+            {/* {use == '' ? '' : (<>
               <li><a href=''>Hello {use}</a></li>
               <li><a href='' onClick={HandleDoLogout}>Logout</a></li>
-            </>)}
+            </>)} */}
 
           </ul>
         </div>

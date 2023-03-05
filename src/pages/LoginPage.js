@@ -6,10 +6,10 @@ import axios from 'axios';
 
 
 
+
 const Login = ({ use, setUse }) => {
 
     const navigate = useNavigate();
-
     const userRef = useRef();
     const errRef = useRef();
 
@@ -34,8 +34,14 @@ const Login = ({ use, setUse }) => {
             //setSuccess(true);
             // 👇️ redirect
             setUse(result.data.user.username)
-            navigate('/movies');
-            console.log(result);
+
+            if (result.data.user.role == "administrator") {
+                navigate('/movies');
+
+            }
+            else {
+                navigate('/movies');
+            }
         }
         catch (error) {
             setErrMsg(error.response.data.msg);

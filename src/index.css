@@ -278,7 +278,12 @@ nav {
   height: 10rem;
 }
 
-.search-movie-box {}
+.search-movie-box {
+  width: 400px;
+  margin: 20px;
+  height: 40px;
+  padding-left: 30px;
+}
 
 @media screen and (min-width: 800px) {
   .nav-center {
@@ -346,4 +351,6 @@ nav {
     box-shadow: 0 1px 2px 1px #ddd;
     border-radius: 3px;
   }
+
+  .side {}
 }

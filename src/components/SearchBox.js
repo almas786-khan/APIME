@@ -2,14 +2,18 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
-const SearchBox = (movies, setSearchValue) => {
-    const handleSubmit = (e) => e.preventDefault()
+const SearchBox = ({ movies, setSearchResults }) => {
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        console.log("Hello Search")
+    }
 
     const handleSearchChange = (e) => {
-        if (!e.target.value) return setSearchValue(movies)
+        if (!e.target.value) return setSearchResults(movies)
 
         const resultArray = movies.filter(movie => movie.title.includes(e.target.value))
-        setSearchValue(resultArray)
+        console.log(resultArray)
+        setSearchResults(resultArray)
     }
 
     return (
@@ -20,6 +24,8 @@ const SearchBox = (movies, setSearchValue) => {
                 <button className='search_button'>
                     <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </button>
+
+
             </form>
         </header >
     );

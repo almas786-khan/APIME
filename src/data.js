@@ -4,6 +4,8 @@ import { GoDeviceCameraVideo, GoBook } from "react-icons/go";
 
 import { BiLogIn } from "react-icons/bi";
 
+
+
 export const links = [
     {
         id: 1,
@@ -35,6 +37,8 @@ export const links = [
         text: 'Register',
         icon: <FaUser />
     },
+
+
 
 ]
 

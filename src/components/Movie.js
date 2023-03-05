@@ -3,7 +3,9 @@ import styled from 'styled-components'
 import { FaSearch } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 
-const Movie = ({ image, title, _id }) => {
+
+const Movie = ({ image, title, _id, category, movieRating }) => {
+
   return (
     <Wrapper>
       <div className='container'>
@@ -13,25 +15,35 @@ const Movie = ({ image, title, _id }) => {
         </Link>
       </div>
       <footer>
-        <h5>{title}</h5>
+        <h5>{title} {movieRating}
+        </h5>
+
+        <span className='fa fa-star checked'></span>
+
       </footer>
     </Wrapper>
   )
 }
 
+
+
 const Wrapper = styled.article`
   .container {
     position: relative;
-    background: var(--clr-black);
+    background: var(--clr-primary-02);
     border-radius: var(--radius);
   }
   img {
     width: 100%;
     display: block;
-    object-fit: fill;
+    object-fit: contain;
     border-radius: var(--radius);
     transition: var(--transition);
   }
+  .checked {
+  color: orange;
+}
+
   .link {
     position: absolute;
     top: 50%;

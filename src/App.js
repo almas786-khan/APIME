@@ -10,6 +10,7 @@ import SingleMoviePage from './pages/SingleMoviePage';
 import Login from './pages/LoginPage';
 import Register from './pages/RegisterPage';
 import AdminPage from './pages/AdminPage';
+import AdminMoviesPage from './pages/AdminMoviesPage';
 
 import React from 'react';
 import "./App.css";

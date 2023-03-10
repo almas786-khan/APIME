@@ -14,14 +14,8 @@ function MoviesPage({ use, setUse }) {
   const [value, setValue] = useState('')
   const [sortValue, setSortValue] = useState('')
   const [filter, setFilter] = useState('')
-  const url = '/apime/movies'
+  //const url = '/apime/movies'
 
-  //const [filter, setFilter] = useState({
-  //title:'',
-  //page:'1',
-  //category:'',
-  //sort:''
-  //})
   const [url1, setUrl] = useState()
 
   useEffect(() => {
@@ -37,9 +31,9 @@ function MoviesPage({ use, setUse }) {
   useEffect(() => {
     const initializePage = async () => {
       try {
-        const { data: { movies } } = await axios.get(url)
+        const { data: { movies } } = await axios.get('/apime/movies')
         setMovies(movies)
-        const data = await axios.get('apime/user/userCheck')
+        const data = await axios.get('/apime/user/userCheck')
         setUse(data.data.user.username)
       }
       catch (error) {
@@ -56,7 +50,7 @@ function MoviesPage({ use, setUse }) {
     setFilter("");
     setSortValue("");
     try {
-      const { data: { movies } } = await axios.get(url)
+      const { data: { movies } } = await axios.get('/apime/movies')
       setMovies(movies);
     }
     catch (error) {
@@ -94,15 +88,11 @@ function MoviesPage({ use, setUse }) {
                 placeholder='Search Movie'
                 value={value}
                 onChange={(e) => setValue(e.target.value)} />
-
             </div>
-
-
-
-            <div className='form-control'>
+            <div>
               <label htmlFor='filter'>Category</label>
               <select
-                name='filter' id='filter' className='filter-input' onChange={(e) => setFilter(e.target.value)} value={filter}>
+                name='filter' id='filter' className='form-control' onChange={(e) => setFilter(e.target.value)} value={filter}>
                 <option value=''>All</option>
                 <option value='Drama'>Drama</option>
                 <option value='Action'>Action</option>
@@ -116,15 +106,17 @@ function MoviesPage({ use, setUse }) {
               </select>
             </div>
 
-            <div className='form-control'>
+            <div >
               <label htmlFor='sort'>Sort by</label>
               <select
-                name='sort' id='sort' className='sort-input' onChange={(e) => setSortValue(e.target.value)} value={sortValue}>
+                name='sort' id='sort' className='form-control' onChange={(e) => setSortValue(e.target.value)} value={sortValue}>
                 <option value='title'>title (a - z)</option>
                 <option value='-title'>title (z - a)</option>
               </select>
             </div>
+            <br />
             <input type='submit' value='Submit' className='submit-btn' />
+            <br />
             <button type='button' className='clear-btn' onClick={clearFilter}>
               Clear filters
             </button>
@@ -135,16 +127,9 @@ function MoviesPage({ use, setUse }) {
         <div>
           <section>
             <div className='section-center featured'>
-              {/* <MovieList movies={movies} /> */}
-              {/*   {movies.map(mv => (
-                <Movie key={mv._id}{...mv}>
-
-                </Movie>
-              ))} */}
               {movies.length < 1 ? <h3>Sorry, no movie matched your search.</h3> :
                 movies.map(mv => (
                   <Movie key={mv._id}{...mv}>
-
                   </Movie>
                 ))
               }
@@ -161,7 +146,7 @@ function MoviesPage({ use, setUse }) {
 const Wrapper = styled.section`
  .form-control {
     margin-bottom: 1.25rem;
-    width: 45%;
+    width: 100%;
 
     label{
       padding-right: 0.5rem;
@@ -171,9 +156,9 @@ const Wrapper = styled.section`
       margin-bottom: 0.5rem;
     }
   }
- 
+
    .search-input {
-    
+    width: 100%;
     background: var(--clr-grey-10);
     border-radius: var(--radius);
     border-color: transparent;
@@ -221,23 +206,23 @@ const Wrapper = styled.section`
       width:25%;
       padding-left: 150px;
      
-    
     }
   }
    .clear-btn {
     background: var(--clr-red-dark);
     color: var(--clr-white);
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--radius);
-    margin-left: 0.5rem;
-    width: 22%;
+    display: block;
+    width: 148px;
+    margin: 0 auto;
+    text-align: center;
   }
   .submit-btn {
+   display: block;
+    width: 148px;
+    margin: 0 auto;
+    text-align: center;
     background: var(--clr-primary-01);
     color: var(--clr-white);
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--radius);
-     width: 21%;
   }
    
 `

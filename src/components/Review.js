@@ -2,26 +2,83 @@ import React from 'react'
 import styled from 'styled-components'
 import { FaSearch } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
-import { format } from 'date-fns'
+import { BiTrash } from "react-icons/bi";
+import axios from 'axios'
+import { useState } from 'react';
+import ConfirmBox from './ConfirmBox';
 
-const Review = ({ reviewComment, reviewRating, _id, movie, user, createdAt }) => {
 
-    return (
-        <Wrapper>
-            <div className='container'>
-                <Link to={`/reviews/${_id}`} className='link'>
-                    <FaSearch />
-                </Link>
-                <h5>Rating: {reviewRating}
-                    <br />Review: {reviewComment}
-                    {/* <br />{format({ createdAt }, 'yyyy-mm-dd')} */}
-                </h5>
-            </div>
-            <footer>
+const Review = ({ reviews }) => {
+  const [open, setOpen] = useState(false);
+  const [deleteData, setDeleteData] = useState({});
 
-            </footer>
-        </Wrapper>
-    )
+  function openDelete(review) {
+    setOpen(true);
+    setDeleteData(review);
+  }
+
+  function handleDelete() {
+    try {
+      const res = axios.delete(`/apime/reviews/${deleteData?._id}`);
+      window.location.reload(false);
+      setOpen(false);
+    }
+    catch (error) {
+      console.log(error);
+    }
+
+  }
+
+  /*   const handleDelete = async (event) => {
+  
+      deleteId = event.currentTarget.id;
+      console.log("Id to be deleted" + deleteId);
+      const res = await axios.delete(`/apime/reviews/${deleteId}`);
+      console.log("message foe delete" + res.data.msg);
+  
+      //window.location.reload(false);
+  
+    } */
+
+  return (
+    <Wrapper>
+      <div className='container'>
+        <table className='table table-striped'>
+          <thead>
+            <tr>
+              <th>Movie</th>
+              <th>Rating</th>
+              <th>Review</th>
+              <th>Created date</th>
+              <th>Created By</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {reviews.map(review => (
+              <tr key={review._id} >
+                <td>{review.movie.title}</td>
+                <td>{review.reviewRating}</td>
+                <td>{review.reviewComment}</td>
+                <td>{review.createdAt}</td>
+                <td>{review.user.username}</td>
+                <td><form>
+                  <input type='hidden' name='id' value={review._id} />
+                  <button id={review._id} type='button' onClick={() => openDelete(review)} ><BiTrash /></button>
+                </form>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <ConfirmBox open={open}
+        closeDialog={() => setOpen(false)}
+        deleteFunction={handleDelete}
+        deleteId="review"
+      />
+    </Wrapper>
+  )
 }
 
 
@@ -32,12 +89,8 @@ const Wrapper = styled.article`
     background: var(--clr-primary-02);
     border-radius: var(--radius);
   }
-  img {
-    width: 100%;
-    display: block;
-    object-fit: contain;
-    border-radius: var(--radius);
-    transition: var(--transition);
+  h4 {
+    position: relative;
   }
   .link {
     position: absolute;

@@ -1,15 +1,17 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import Review from '../components/Review'
-import Sidebar from '../components/Sidebar'
+import styled from 'styled-components'
+import { Button } from 'react-bootstrap';
+import AdminMoviesPage from './AdminMoviesPage'
 const AdminPage = ({ use, setUse }) => {
     const [reviews, setReviews] = useState([])
-
+    const [toggle, setToggle] = useState(true);
 
     useEffect(() => {
         const setRequest = async () => {
             try {
-                const { data: { reviews } } = await axios.get('apime/reviews')
+                const { data: { reviews } } = await axios.get('/apime/reviews')
                 setReviews(reviews)
             }
             catch (error) {
@@ -20,8 +22,6 @@ const AdminPage = ({ use, setUse }) => {
 
 
     }, [])
-
-
 
 
     useEffect(() => {
@@ -41,32 +41,52 @@ const AdminPage = ({ use, setUse }) => {
 
     }, [])
     return (
-        <div class="container" >
-            <div class="row">
-                <div class="col-sm-4">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">View All Reviews</a>
-                        </li>
+        <Wrapper >
+            <div className='section'>
+                <div className="container" >
+                    <div className="row">
+                        <div className="col-sm-2">
+                            <Button
+                                variant="primary float-right" onClick={() => setToggle(!toggle)}>
+                                Go to Movies Page
+                            </Button>
+                            {/* <button className='submit-btn' onClick={() => setToggle(!toggle)}>Go to Movies Page</button> */}
+                        </div>
+                        <div className="col-sm-9">
 
-                    </ul>
-
-                </div>
-                <div class="col-sm-8">
-                    <h1>Admin Page</h1>
-                    <p>Only accessible by admins.</p>
-                    {reviews.length < 1 ? <h3>Sorry, no reviews matched your search.</h3> :
-                        reviews.map(mv => (
-                            <Review key={mv._id}{...mv}>
-
-                            </Review>
-                        ))
-                    }
+                            {
+                                toggle && (
+                                    <ul >
+                                        <li>
+                                            <Review reviews={reviews}></Review>
+                                        </li>
+                                    </ul>
+                                )
+                            }
+                        </div>
+                        {!toggle
+                            && (
+                                <ul >
+                                    <li>
+                                        <AdminMoviesPage />
+                                    </li>
+                                </ul>
+                            )
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
-
-
+        </Wrapper>
     );
 }
+const Wrapper = styled.section`
+ .submit-btn {
+    display: block;
+    width: 148px;
+    margin: 0 auto;
+    text-align: center;
+    background: var(--clr-primary-01);
+    color: var(--clr-white);
+    
+}`
 export default AdminPage;

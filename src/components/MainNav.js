@@ -18,8 +18,7 @@ const MainNav = ({ use, setUse }) => {
 
     const initializePage = async () => {
       try {
-        const data = await axios.get('apime/user/userCheck')
-
+        const data = await axios.get('/apime/user/userCheck')
         setCurrentUser(data.data.user.role);
       }
       catch (error) {
@@ -30,6 +29,10 @@ const MainNav = ({ use, setUse }) => {
     initializePage();
 
   })
+  //}) - run use effect everytime a useState's value is updated
+  //}[]) - run useEffect only once when the component is mounted/loaded
+  //},[showLinks]) - run useEffect only when the value of showLinks is updated
+
 
   const HandleDoLogout = async (e) => {
     e.preventDefault()
@@ -46,13 +49,8 @@ const MainNav = ({ use, setUse }) => {
 
   const HandleAdmin = (e) => {
     e.preventDefault()
-
-    console.log("inside admin");
     window.location.href = '/reviews';
-    // navigate('/reviews');
   }
-
-
 
   return (
     <nav>
@@ -83,11 +81,6 @@ const MainNav = ({ use, setUse }) => {
                   </li>
                 )
               }
-              // else{
-              //   return(
-              //     <li>{usr}</li>
-              //   )
-              // }
             })}
             {use == '' ? ''
               : currentuser == 'administrator' ?
@@ -103,13 +96,6 @@ const MainNav = ({ use, setUse }) => {
                   </>)
                   : ''
             }
-
-
-            {/* {use == '' ? '' : (<>
-              <li><a href=''>Hello {use}</a></li>
-              <li><a href='' onClick={HandleDoLogout}>Logout</a></li>
-            </>)} */}
-
           </ul>
         </div>
 

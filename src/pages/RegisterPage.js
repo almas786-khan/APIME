@@ -49,8 +49,9 @@ const Register = () => {
                 },
                 withCredentials: true
             };
+            //make api call
             try {
-                const data = await axios.post("http://localhost:3500/apime/user/register", { username: user, password: pwd })
+                const data = await axios.post("/apime/user/register", { username: user, password: pwd })
                 setSuccess(true);
                 console.log(data);
 
@@ -60,11 +61,8 @@ const Register = () => {
                 console.log(error)
                 setErrMsg(error.response.data.msg)
             }
-            // //make api call
-            // const data = await axios.post("http://localhost:3500/apime/user/register",
-            //     JSON.stringify({ username: user, password: pwd }), configuration)
-            //     .then(data => { setSuccess(true); console.log(data); })
-            //     .catch(error => { setErrMsg(error.response.data.msg); console.log(error) });
+            
+        
         }
 
 
@@ -73,12 +71,7 @@ const Register = () => {
     return (
         <>
             {success ? (
-                <Container>
-                    <h1>Congratulation, You're signed up!</h1>
-                    <h2>
-                        <Link to="/login">Login In Here</Link>
-                    </h2>
-                </Container>
+                ''
             ) : (
                 <Container>
                     <div className='loginContainer'>

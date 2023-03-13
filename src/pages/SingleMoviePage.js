@@ -1,22 +1,25 @@
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+//import useSWR from 'swr';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import Stars from '../components/Stars';
 import AddReview from '../components/AddReview';
 import Reviews from '../components/Reviews';
-//import Pagination from '../components/Pagination';
-
-
+import Pagination from '../components/Pagination';
 
 const SingleMoviePage = ({ use, setUse }) => {
 
     const { _id } = useParams();
+    const errRef = useRef();
     const [movie, setMovie] = useState([]);
     const [rating, setRating] = useState([]);
     const [reviews, setReviews] = useState([]);
+    const [totalReviews, setTotalReviews] = useState(0)
     const [currentPage, setCurrentPage] = useState(1);
-    const [reviewsPerPage] = useState(3);
+    const [reviewsPerPage] = useState(2);
+    const [openAddReview, setOpenAddReview] = useState(false);
     const url = `/apime/movies/${_id}`;
+    const [sample, setSample] = useState('');
 
     //get current reviews
     const indexOfLastReview = currentPage * reviewsPerPage;
@@ -24,36 +27,81 @@ const SingleMoviePage = ({ use, setUse }) => {
     const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
     const totalPages = Math.ceil(reviews.length / reviewsPerPage);
 
-    const handleSubmitRatingReview = (ratingValue, reviewText) => {
-        // Submit the rating and review to the server
-        console.log(`Submitting rating: ${ratingValue}, review: ${reviewText}`);
-    }
+
+    const handleOpenAddModal = () => {
+        setOpenAddReview(true);
+    };
+
+    const handleCloseAddModal = () => {
+        setOpenAddReview(false);
+    };
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
+  
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
+            const { data: { movie, reviewCount, reviews } } = await axios.get(url)
+            const user = await axios.get('/apime/user/userCheck')
 
-            const { data: { movie, reviews } } = await axios.get(url)
             setMovie(movie)
-            //console.log(movie)
+            setRating(parseFloat(movie.movieRating).toFixed(2))
             setReviews(reviews)
-            const reviewRatings = reviews.map(review => review.reviewRating);
-            const averageRating = Math.ceil(reviewRatings.reduce((acc, curr) => acc + curr, 0) / reviews.length)
-            setRating(averageRating)
-            //console.log(averageRating)
-            //console.log(reviews)
-            const data = await axios.get('/apime/user/userCheck')
-            setUse(data.data.user.username)
+            setTotalReviews(reviewCount)
+            setUse(user.data.user.username)
         }
         catch (error) {
             console.log(error.response);
         }
-    };
+    }, [url]);
+
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [fetchData]);
+
+    useEffect(() => {
+        fetchData();
+    }, [rating, reviews]);
+
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+
+    //             const { data: { movie, reviewCount,reviews } } = await axios.get(url)
+    //             const user = await axios.get('/apime/user/userCheck')
+
+    //                 setMovie(movie)
+    //                 console.log(movie.movieRating)
+    //                 setRating(movie.movieRating)
+    //                 setReviews(reviews)
+    //                 setTotalReviews(reviewCount)
+    //                 setUse(user.data.user.username)
+
+
+    //         }
+    //         catch (error) {
+    //             console.log(error.response);
+    //         }
+    //     };
+    //     fetchData();
+
+    // },[]);
+    // useEffect(() => {
+    //     const updatedData = async () => {
+    //       try {
+    //         const { data: { movie, reviewCount, reviews } } = await axios.get(url)
+    //         setRating(movie.movieRating)
+    //         setReviews(reviews)
+    //         setTotalReviews(reviewCount)
+    //       }
+    //       catch (error) {
+    //         console.log(error.response);
+    //       }
+    //     };
+    //     updatedData();
+    //   }, [rating, reviews]);
+
 
     return (
         <>
@@ -78,6 +126,7 @@ const SingleMoviePage = ({ use, setUse }) => {
                                 <div>
                                     <Stars rating={rating} />
                                 </div>
+                                <p>{rating} / 5 Average Rating</p>
                                 <p>Category: {movie.category}</p>
                                 <p>Year Released: {movie.yearReleased}</p>
                                 <p>Director: {movie.director}</p>
@@ -89,12 +138,17 @@ const SingleMoviePage = ({ use, setUse }) => {
                         <div className='container'>
                             <h3 className='text-center'>Reviews and Ratings</h3>
                             <div className='d-flex'>
-                                <p className='numOfReviews font-weight-bold'>({reviews.length}) Reviews</p>
-                                <AddReview onSubmit={handleSubmitRatingReview} />
+                                <p className='numOfReviews font-weight-bold'>({totalReviews}) Reviews</p>
+                                <button
+                                    className='btn btn-primary float-right' onClick={handleOpenAddModal}>
+                                    Add a Review
+                                </button>
+
+                                {openAddReview && <AddReview movieId={_id} onClose={handleCloseAddModal} />}
                             </div>
                             <hr />
                             <Reviews reviews={currentReviews} />
-                            {/* <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} /> */}
+                            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
                         </div>
 
 
@@ -110,90 +164,3 @@ const SingleMoviePage = ({ use, setUse }) => {
 
 
 export default SingleMoviePage;
-
-/* import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import styled from 'styled-components'
-
-
-
-const SingleMoviePage = () => {
-    const [movie, setMovies] = useState([])
-    const { _id } = useParams();
-
-
-    const url = `/apime/movies/${_id}`;
-    const fetchData = async () => {
-        try {
-
-            const { data: { movie } } = await axios.get(url)
-            setMovies(movie)
-            console.log(movie)
-
-
-        }
-        catch (error) {
-            console.log(error.response);
-        }
-    };
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    return (
-        <>
-            <Wrapper className='section'>
-                <div className='title'>
-                    <h2>Single Movie page</h2>
-                    <div className='underline'></div>
-                    <Link to='/movies'>back to movies</Link></div>
-                <div className='section section-center page'>
-
-                    <div className='product-center'>
-                        {[movie].map(mv => (
-                            <ul key={mv._id}>
-                                <section className='content'>
-                                    <h2>{mv.title}</h2>
-
-                                    <p>{mv.category}</p>
-                                    <p>{mv.director}</p>
-                                    <p>{mv.yearReleased}</p>
-                                    <img src={mv.image}></img>
-                                </section>
-                            </ul>
-                        ))}
-                    </div>
-                </div>
-            </Wrapper>
-        </>
-
-
-    )
-};
-
-const Wrapper = styled.section`
-  background: var(--clr-primary-00);
- .product-center {
-    display: grid;
-    gap: 4rem;
-    margin-top: 2rem;
-  }
-  .title{
-    color :var(--clr-primary-01)
-  }
-  .btn {
-    display: block;
-    width: 148px;
-    margin: 0 auto;
-    text-align: center;
-  }
-  @media (min-width: 992px) {
-    .product-center {
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-    }
-  }
-`
-
-export default SingleMoviePage; */

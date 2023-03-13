@@ -353,4 +353,17 @@ nav {
   }
 
   .side {}
+  /* Stars */
+
 }
+.on{
+  color: #f8db03;
+ }
+ .off{
+  color: #d2d0d0;
+ }
+ /* Reviews on Single Movie Page */
+ .numOfReviews{
+  margin: auto;
+  margin-left: 0;
+ }

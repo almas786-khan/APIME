@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { FaSearch } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
+import Stars from '../components/Stars';
 
 
 const Movie = ({ image, title, _id, category, movieRating }) => {
@@ -14,12 +15,24 @@ const Movie = ({ image, title, _id, category, movieRating }) => {
           <FaSearch />
         </Link>
       </div>
-      <footer>
-        <h5>{title} {movieRating}
-        </h5>
-
-        <span className='fa fa-star checked'></span>
-
+      <footer className='mt-2'>
+        <div className='row'>
+          <div className='col-md-8'>
+            <p className='font-weight-bold'>{title}</p>
+          </div>
+          <div className='col-6 col-md-4'>
+            <div className='row justify-content-end'>
+              <div className='col-md-2'>
+                {(parseFloat(movieRating)).toFixed(2)}
+              </div>
+              <div className='col'>
+                <Stars rating={movieRating} />
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <div></div>
       </footer>
     </Wrapper>
   )
@@ -40,9 +53,6 @@ const Wrapper = styled.article`
     border-radius: var(--radius);
     transition: var(--transition);
   }
-  .checked {
-  color: orange;
-}
 
   .link {
     position: absolute;
@@ -69,24 +79,6 @@ const Wrapper = styled.article`
   }
   .container:hover .link {
     opacity: 1;
-  }
-  footer {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  footer h5,
-  footer p {
-    margin-bottom: 0;
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--clr-primary-5);
-  }
+  }`
 
-  footer p {
-    color: var(--clr-primary-5);
-    letter-spacing: var(--spacing);
-  }
-`
 export default Movie

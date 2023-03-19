@@ -19,7 +19,6 @@ const SingleMoviePage = ({ use, setUse }) => {
     const [reviewsPerPage] = useState(2);
     const [openAddReview, setOpenAddReview] = useState(false);
     const url = `/apime/movies/${_id}`;
-    const [sample, setSample] = useState('');
 
     //get current reviews
     const indexOfLastReview = currentPage * reviewsPerPage;
@@ -101,7 +100,10 @@ const SingleMoviePage = ({ use, setUse }) => {
     //     };
     //     updatedData();
     //   }, [rating, reviews]);
-
+    
+    const addToWatchlist = async()=>{
+        console.log('added to watch list...')
+    }
 
     return (
         <>
@@ -131,6 +133,10 @@ const SingleMoviePage = ({ use, setUse }) => {
                                 <p>Year Released: {movie.yearReleased}</p>
                                 <p>Director: {movie.director}</p>
                                 <p>Description: <br />{movie.description}</p>
+                                <button
+                                    className='btn btn-primary' onClick={()=>addToWatchlist()}>
+                                    &#43; Watch List
+                                </button>
                             </div>
                         </div>
                         <br />

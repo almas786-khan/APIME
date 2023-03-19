@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import logo from '../assets/iconn.svg'
-import { FaBars } from 'react-icons/fa';
+import { FaBars,FaVoteYea } from 'react-icons/fa';
 import { links } from '../data'
 import axios from 'axios'
 
@@ -51,6 +51,10 @@ const MainNav = ({ use, setUse }) => {
     e.preventDefault()
     window.location.href = '/reviews';
   }
+  const HandleWatchlist = (e) => {
+    e.preventDefault()
+    window.location.href = '/Watchlist';
+  }
 
   return (
     <nav>
@@ -91,6 +95,7 @@ const MainNav = ({ use, setUse }) => {
                 </>)
                 : currentuser == 'user' ?
                   (<>
+                    <li><a href='' onClick={HandleWatchlist}><FaVoteYea/>Watchlist</a></li>
                     <li><a href=''>Hello {use}</a></li>
                     <li><a href='' onClick={HandleDoLogout}>Logout</a></li>
                   </>)

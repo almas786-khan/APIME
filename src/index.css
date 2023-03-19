@@ -367,3 +367,8 @@ nav {
   margin: auto;
   margin-left: 0;
  }
+ /* button size same */
+ .btn-same{
+  width: 110px;
+  max-width: 100%;
+ }

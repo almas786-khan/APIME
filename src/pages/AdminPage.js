@@ -7,6 +7,7 @@ import AdminMoviesPage from './AdminMoviesPage'
 const AdminPage = ({ use, setUse }) => {
     const [reviews, setReviews] = useState([])
     const [toggle, setToggle] = useState(true);
+    const [active, setActive] = useState(false);
 
     useEffect(() => {
         const setRequest = async () => {
@@ -40,19 +41,21 @@ const AdminPage = ({ use, setUse }) => {
         initializePage();
 
     }, [])
+
     return (
         <Wrapper >
             <div className='section'>
                 <div className="container" >
                     <div className="row">
-                        <div className="col-sm-2">
-                            <Button
-                                variant="primary float-right" onClick={() => setToggle(!toggle)}>
-                                Go to Movies Page
-                            </Button>
-                            {/* <button className='submit-btn' onClick={() => setToggle(!toggle)}>Go to Movies Page</button> */}
+                        <div className="col-sm-1">
+                            <button
+                                className="btn btn-primary float-right"
+                                onClick={() => setToggle(!toggle)}>
+                                {toggle ? 'Go to Movies' : 'Go to Reviews'}
+                            </button>
                         </div>
                         <div className="col-sm-9">
+
 
                             {
                                 toggle && (
@@ -63,16 +66,17 @@ const AdminPage = ({ use, setUse }) => {
                                     </ul>
                                 )
                             }
+
+                            {!toggle
+                                && (
+                                    <ul >
+                                        <li>
+                                            <AdminMoviesPage />
+                                        </li>
+                                    </ul>
+                                )
+                            }
                         </div>
-                        {!toggle
-                            && (
-                                <ul >
-                                    <li>
-                                        <AdminMoviesPage />
-                                    </li>
-                                </ul>
-                            )
-                        }
                     </div>
                 </div>
             </div>

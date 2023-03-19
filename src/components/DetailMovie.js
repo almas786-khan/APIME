@@ -48,7 +48,7 @@ function DetailMovie(props) {
                 backdrop="static"
                 keyboard={false}
             >
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>Movie Details</Modal.Title>
                     <Button variant="btn-close" onClick={handleClose}>╳
                     </Button>

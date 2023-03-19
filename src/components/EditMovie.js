@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useEffect } from 'react';
 
 function EditMovie(props) {
+
     const [title, setTitle] = useState(props.title);
     const [yearReleased, setYearReleased] = useState(props.yearReleased);
     const [director, setDirector] = useState(props.director);
@@ -22,7 +23,6 @@ function EditMovie(props) {
 
             try {
                 const { data: { movie } } = await axios.get(`/apime/movies/${props._id}`);
-                //console.log(movie);
                 setTitle(movie.title);
                 setYearReleased(movie.yearReleased);
                 setDirector(movie.director);
@@ -49,7 +49,7 @@ function EditMovie(props) {
                 backdrop="static"
                 keyboard={false}
             >
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>Edit Movie</Modal.Title>
                     <Button variant="btn-close" onClick={handleClose}>╳
                     </Button>

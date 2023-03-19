@@ -1,16 +1,18 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
-import GreenCheck from '../assets/green-checkmark.png'
+import React, { useState, useRef, useEffect } from 'react';
+import Button from 'react-bootstrap/Button';
+import { Modal, Form } from 'react-bootstrap';
 import axios from 'axios';
+import GreenCheck from '../assets/green-checkmark.png'
 
-function AddMovie({ onClose }) {
+function EdiMovie({ _id, onClose }) {
+
     const errRef = useRef();
     const [title, setTitle] = useState("");
     const [yearReleased, setYearReleased] = useState("");
     const [director, setDirector] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("");
-    const [image, setImage] = useState("");
+
     const [success, setSuccess] = useState(false);
     const [errMsg, setErrMsg] = useState('');
     const [showModal, setShowModal] = useState(false);
@@ -23,30 +25,46 @@ function AddMovie({ onClose }) {
 
     useEffect(() => {
         setErrMsg('');
-    }, [title, yearReleased, director, description, category, image]);
+    }, [title, yearReleased, director, description, category]);
 
-    const handleSubmit = async (event) => {
+    useEffect(() => {
 
-        //submit to server
+        const getMovie = async () => {
+
+            try {
+                const { data: { movie } } = await axios.get(`/apime/movies/${_id}`);
+
+                setTitle(movie.title);
+                setYearReleased(movie.yearReleased);
+                setDirector(movie.director);
+                setDescription(movie.description);
+                setCategory(movie.category);
+            }
+            catch (error) {
+                console.log(error);
+            }
+        }
+
+        getMovie();
+    }, [_id]);
+
+    const handleUpdate = async (event) => {
         event.preventDefault();
-        const formData = new FormData();
-        formData.append('movieImage', image);
-
         try {
-            const { data: { url, msg } } = await axios.post('/apime/movies/uploadMovieImage', formData);
-            const res = await axios.post('/apime/movies', {
-                title: title, image: url, yearReleased: yearReleased,
+            const res = await axios.put(`/apime/movies/${_id}`, {
+                title: title, yearReleased: yearReleased,
                 director: director, description: description, category: category
             })
+            console.log(res);
             setSuccess(true);
             setShowModal(true);
         }
         catch (error) {
-            console.log(error.response.data.msg)
+            console.log(error);
             setErrMsg(error.response.data.msg);
         }
 
-    };
+    }
 
     return (
         <>
@@ -58,7 +76,7 @@ function AddMovie({ onClose }) {
                     <Modal.Body className='mx-auto text-center'>
                         <img src={GreenCheck} alt='green check' />
                         <Modal.Title>Success!</Modal.Title>
-                        <p>Movie is added successfully.</p>
+                        <p>Your movie has been updated successfully.</p>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button role='close button' variant="secondary" onClick={() => setShowModal(false) && setSuccess(false)}>Close</Button>
@@ -67,16 +85,15 @@ function AddMovie({ onClose }) {
             ) : (
                 <Modal show={true} onHide={handleClose} backdrop="static">
                     <Modal.Header>
-
-                        <Modal.Title>Add a Movie</Modal.Title>
+                        <Modal.Title>Update Movie</Modal.Title>
                         <Button variant="btn-close" onClick={handleClose}>&times;
                         </Button>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form id='addMovie'>
+                        <Form id='updateMovie' onSubmit={handleUpdate}>
 
                             <br />
-                            <Form.Group className="mb-3" controlId="movieTitle">
+                            <Form.Group className="mb-3" >
                                 <Form.Label>Movie Title</Form.Label>
                                 <Form.Control type="text"
                                     required
@@ -86,11 +103,6 @@ function AddMovie({ onClose }) {
                                 <Form.Control.Feedback type="invalid">
                                     Please type movie title.
                                 </Form.Control.Feedback>
-                            </Form.Group>
-                            <Form.Group>
-                                <Form.Label>Movie Image</Form.Label>
-                                <Form.Control required type="file"
-                                    onChange={(event) => setImage(event.target.files[0])}></Form.Control>
                             </Form.Group>
                             <Form.Group
                                 className="mb-3"
@@ -120,7 +132,7 @@ function AddMovie({ onClose }) {
                                     Please type movie director.
                                 </Form.Control.Feedback>
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="movieTextarea">
+                            <Form.Group className="mb-3" >
                                 <Form.Label>Movie Description</Form.Label>
                                 <Form.Control as="textarea" rows={4} placeholder="Enter movie description"
                                     required
@@ -130,7 +142,7 @@ function AddMovie({ onClose }) {
                                     Please type movie description.
                                 </Form.Control.Feedback>
                             </Form.Group>
-                            <Form.Group className="mb-3" controlId="movieCategory">
+                            <Form.Group className="mb-3">
                                 <Form.Label>Movie Category</Form.Label>
                                 <Form.Control as="select" id='category' name='category' aria-label="Default select example"
                                     required
@@ -150,6 +162,7 @@ function AddMovie({ onClose }) {
                                     Please select movie category.
                                 </Form.Control.Feedback>
                             </Form.Group>
+
                         </Form>
                     </Modal.Body>
                     <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
@@ -157,15 +170,14 @@ function AddMovie({ onClose }) {
                         <Button variant="secondary" onClick={handleClose}>
                             Cancel
                         </Button>
-                        <button className='btn btn-primary' type="submit" onClick={handleSubmit} form="addMovie">
-                            Add
+                        <button className='btn btn-primary' type="submit" form="updateMovie">
+                            Update
                         </button>
                     </Modal.Footer>
-
                 </Modal>
             )}
         </>
     );
 }
 
-export default AddMovie;
+export default EdiMovie;

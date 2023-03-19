@@ -16,19 +16,13 @@ function MoviesPage({ use, setUse }) {
   const [filter, setFilter] = useState('')
   const [currentPage, setCurrentPage] = useState(1);
   const [moviesPerPage] = useState(9);
-  const [totalMovies,setTotalMovies] = useState(1);
+  const [totalMovies, setTotalMovies] = useState(1);
   //const [totalPages,setTotalPages] = useState(1);
   const [fullUrl, setFullUrl] = useState()
   const basedUrl = `/apime/movies?page=${currentPage}`;
-  //const [filter, setFilter] = useState({
-  //title:'',
-  //page:'1',
-  //category:'',
-  //sort:''
-  //})
-  
-  const totalPages = Math.ceil(totalMovies / moviesPerPage)
 
+
+  const totalPages = Math.ceil(totalMovies / moviesPerPage)
   useEffect(() => {
     const setRequest = async () => {
       setFullUrl(`/apime/movies?page=${currentPage}&title=${value}&category=${filter}&sort=${sortValue}`)
@@ -36,7 +30,7 @@ function MoviesPage({ use, setUse }) {
 
     setRequest();
 
-  }, [currentPage,value, filter, sortValue])
+  }, [currentPage, value, filter, sortValue])
 
   useEffect(() => {
     const initializePage = async () => {
@@ -45,7 +39,7 @@ function MoviesPage({ use, setUse }) {
         setMovies(movies)
         setTotalMovies(totalCount)
         //get total pages
-        
+
         const data = await axios.get('apime/user/userCheck')
         setUse(data.data.user.username)
       }
@@ -64,7 +58,7 @@ function MoviesPage({ use, setUse }) {
     try {
       const { data: { movies } } = await axios.get(basedUrl)
       setMovies(movies);
-      
+
     }
     catch (error) {
       console.log(error)
@@ -87,27 +81,27 @@ function MoviesPage({ use, setUse }) {
 
   }
 
-  const handlePageChange = async(pageNumber) => {
+  const handlePageChange = async (pageNumber) => {
     setCurrentPage(pageNumber);
-   
-};
-const handlePage = async() =>{
-  try {
-    const { data: { movies} } = await axios.get(fullUrl)
-    setMovies(movies);
-    // setTotalMovies(movies.length)
-    // //get total pages
-    // setTotalPages(Math.ceil(totalMovies / moviesPerPage))
-  }
-  catch (error) {
-    console.log(error)
-  }
-  console.log('current page is: ' + currentPage)
+
+  };
+  const handlePage = async () => {
+    try {
+      const { data: { movies } } = await axios.get(fullUrl)
+      setMovies(movies);
+      // setTotalMovies(movies.length)
+      // //get total pages
+      // setTotalPages(Math.ceil(totalMovies / moviesPerPage))
+    }
+    catch (error) {
+      console.log(error)
+    }
+    console.log('current page is: ' + currentPage)
     console.log(movies)
-}
-const startIndex = (currentPage - 1) * moviesPerPage;
-const endIndex = startIndex + moviesPerPage;
-const currentMovies = movies.slice(startIndex, endIndex);
+  }
+  const startIndex = (currentPage - 1) * moviesPerPage;
+  const endIndex = startIndex + moviesPerPage;
+  const currentMovies = movies.slice(startIndex, endIndex);
   return (
     <main>
       <Wrapper className='section'>
@@ -176,8 +170,8 @@ const currentMovies = movies.slice(startIndex, endIndex);
         </div>
 
         <form onSubmit={handlePage}>
-                 <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-              </form>
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+        </form>
       </Wrapper>
     </main >
   )

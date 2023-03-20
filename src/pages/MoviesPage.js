@@ -14,12 +14,12 @@ function MoviesPage({ use, setUse }) {
   const [value, setValue] = useState('')
   const [sortValue, setSortValue] = useState('')
   const [filter, setFilter] = useState('')
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState();
   const [moviesPerPage] = useState(9);
   const [totalMovies, setTotalMovies] = useState(1);
-  //const [totalPages,setTotalPages] = useState(1);
-  const [fullUrl, setFullUrl] = useState()
-  const basedUrl = `/apime/movies?page=${currentPage}`;
+  const [fullUrl, setFullUrl] = useState('/apime/movies?page=1')
+  const [trigger, setTrigger] = useState(false)
+  const basedUrl = '/apime/movies?page=1';
 
 
   const totalPages = Math.ceil(totalMovies / moviesPerPage)
@@ -27,10 +27,21 @@ function MoviesPage({ use, setUse }) {
     const setRequest = async () => {
       setFullUrl(`/apime/movies?page=${currentPage}&title=${value}&category=${filter}&sort=${sortValue}`)
     }
-
     setRequest();
+  }, [value, filter, sortValue])
 
-  }, [currentPage, value, filter, sortValue])
+  useEffect(()=>{
+    const setRequest = async () => {
+      setFullUrl(`/apime/movies?page=${currentPage}&title=${value}&category=${filter}&sort=${sortValue}`)
+      setTrigger(true)
+    }
+    setRequest();
+  },[currentPage])
+
+  useEffect(()=>{
+    setTrigger(false)
+    handleSearch()
+  },[trigger])
 
   useEffect(() => {
     const initializePage = async () => {
@@ -38,7 +49,6 @@ function MoviesPage({ use, setUse }) {
         const { data: { movies, totalCount } } = await axios.get(basedUrl)
         setMovies(movies)
         setTotalMovies(totalCount)
-        //get total pages
 
         const data = await axios.get('apime/user/userCheck')
         setUse(data.data.user.username)
@@ -50,14 +60,15 @@ function MoviesPage({ use, setUse }) {
 
     initializePage();
 
-  }, [currentPage])
+  }, [])
   const clearFilter = async () => {
     setValue("");
     setFilter("");
     setSortValue("");
     try {
-      const { data: { movies } } = await axios.get(basedUrl)
+      const { data: { movies, totalCount } } = await axios.get(basedUrl)
       setMovies(movies);
+      setTotalMovies(totalCount)
 
     }
     catch (error) {
@@ -66,39 +77,30 @@ function MoviesPage({ use, setUse }) {
 
   }
   const handleSearch = async (e) => {
-
-    e.preventDefault();
+    if(e){
+      e.preventDefault();
+    }
     try {
-      const { data: { movies } } = await axios.get(fullUrl)
+      const { data: { movies, totalCount } } = await axios.get(fullUrl)
       setMovies(movies);
-      // setTotalMovies(movies.length)
-      // //get total pages
-      // setTotalPages(Math.ceil(totalMovies / moviesPerPage))
+      setTotalMovies(totalCount)
     }
     catch (error) {
       console.log(error)
     }
 
+  }
+
+  const handleOnClickSubmit = async() => {
+    setCurrentPage(1)
+    console.log('hello handle on clicl submut')
   }
 
   const handlePageChange = async (pageNumber) => {
     setCurrentPage(pageNumber);
-
+    console.log('hello handle page change ' + currentPage)
   };
-  const handlePage = async () => {
-    try {
-      const { data: { movies } } = await axios.get(fullUrl)
-      setMovies(movies);
-      // setTotalMovies(movies.length)
-      // //get total pages
-      // setTotalPages(Math.ceil(totalMovies / moviesPerPage))
-    }
-    catch (error) {
-      console.log(error)
-    }
-    console.log('current page is: ' + currentPage)
-    console.log(movies)
-  }
+
   const startIndex = (currentPage - 1) * moviesPerPage;
   const endIndex = startIndex + moviesPerPage;
   const currentMovies = movies.slice(startIndex, endIndex);
@@ -146,7 +148,7 @@ function MoviesPage({ use, setUse }) {
               </select>
             </div>
             <br />
-            <input type='submit' value='Submit' className='submit-btn' />
+            <input type='submit' value='Submit' className='submit-btn' onClick={handleOnClickSubmit} />
             <br />
             <button type='button' className='clear-btn' onClick={clearFilter}>
               Clear filters
@@ -169,7 +171,7 @@ function MoviesPage({ use, setUse }) {
           </section>
         </div>
 
-        <form onSubmit={handlePage}>
+        <form>
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
         </form>
       </Wrapper>

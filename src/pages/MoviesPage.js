@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Pagination from '../components/Pagination'
 import SearchBox from '../components/SearchBox'
 import styled from 'styled-components'
@@ -11,39 +11,52 @@ import Sort from '../components/Sort'
 
 function MoviesPage({ use, setUse }) {
   const [movies, setMovies] = useState([])
+
   const [value, setValue] = useState('')
+  const valueRef = useRef('')
+
   const [sortValue, setSortValue] = useState('')
+  const sortRef = useRef('')
+
   const [filter, setFilter] = useState('')
+  const filterRef = useRef('')
+
   const [currentPage, setCurrentPage] = useState();
+  const currentPageRef = useRef(1)
+
   const [moviesPerPage] = useState(9);
   const [totalMovies, setTotalMovies] = useState(1);
   const [fullUrl, setFullUrl] = useState('/apime/movies?page=1')
   const [trigger, setTrigger] = useState(false)
+  const hasMounted = useRef(false)
   const basedUrl = '/apime/movies?page=1';
 
 
   const totalPages = Math.ceil(totalMovies / moviesPerPage)
-  useEffect(() => {
-    const setRequest = async () => {
-      setFullUrl(`/apime/movies?page=${currentPage}&title=${value}&category=${filter}&sort=${sortValue}`)
-    }
-    setRequest();
-  }, [value, filter, sortValue])
 
   useEffect(()=>{
-    const setRequest = async () => {
-      setFullUrl(`/apime/movies?page=${currentPage}&title=${value}&category=${filter}&sort=${sortValue}`)
-      setTrigger(true)
+    if(hasMounted.current){
+      console.log('1st use effect')
+      const exec = async() => {
+        try {
+          const { data: { movies, totalCount } } = await axios.get(fullUrl)
+          setMovies(movies);
+          setTotalMovies(totalCount)
+        }
+        catch (error) {
+          console.log(error)
+        }
+      }
+      exec()
     }
-    setRequest();
-  },[currentPage])
+    else{
+      hasMounted.current = true
+    }
 
-  useEffect(()=>{
-    setTrigger(false)
-    handleSearch()
-  },[trigger])
+  },[fullUrl])
 
   useEffect(() => {
+    console.log('hello init use effect')
     const initializePage = async () => {
       try {
         const { data: { movies, totalCount } } = await axios.get(basedUrl)
@@ -61,10 +74,14 @@ function MoviesPage({ use, setUse }) {
     initializePage();
 
   }, [])
+  
   const clearFilter = async () => {
     setValue("");
     setFilter("");
     setSortValue("");
+    valueRef.current = ''
+    sortRef.current = ''
+    filterRef.current = ''
     try {
       const { data: { movies, totalCount } } = await axios.get(basedUrl)
       setMovies(movies);
@@ -76,29 +93,22 @@ function MoviesPage({ use, setUse }) {
     }
 
   }
+
   const handleSearch = async (e) => {
-    if(e){
-      e.preventDefault();
-    }
-    try {
-      const { data: { movies, totalCount } } = await axios.get(fullUrl)
-      setMovies(movies);
-      setTotalMovies(totalCount)
-    }
-    catch (error) {
-      console.log(error)
-    }
+    e.preventDefault()
 
-  }
-
-  const handleOnClickSubmit = async() => {
-    setCurrentPage(1)
-    console.log('hello handle on clicl submut')
+    valueRef.current = value
+    sortRef.current = sortValue
+    filterRef.current = filter
+    currentPageRef.current = 1
+    setCurrentPage(currentPageRef.current)
+    setFullUrl(`/apime/movies?page=${currentPageRef.current}&title=${valueRef.current}&category=${filterRef.current}&sort=${sortRef.current}`)
   }
 
   const handlePageChange = async (pageNumber) => {
+    currentPageRef.current = pageNumber
     setCurrentPage(pageNumber);
-    console.log('hello handle page change ' + currentPage)
+    setFullUrl(`/apime/movies?page=${currentPageRef.current}&title=${valueRef.current}&category=${filterRef.current}&sort=${sortRef.current}`)
   };
 
   const startIndex = (currentPage - 1) * moviesPerPage;
@@ -148,7 +158,7 @@ function MoviesPage({ use, setUse }) {
               </select>
             </div>
             <br />
-            <input type='submit' value='Submit' className='submit-btn' onClick={handleOnClickSubmit} />
+            <input type='submit' value='Submit' className='submit-btn' />
             <br />
             <button type='button' className='clear-btn' onClick={clearFilter}>
               Clear filters

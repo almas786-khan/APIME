@@ -5254,7 +5254,9 @@ input[type="submit"].btn-block {
 
 .card {
   position: relative;
+  font-size: large;
   display: -ms-flexbox;
+  text-align: left;
   display: flex;
   -ms-flex-direction: column;
   flex-direction: column;
@@ -5288,9 +5290,14 @@ input[type="submit"].btn-block {
   border-bottom-left-radius: calc(0.25rem - 1px);
 }
 
+.card-header {
+  font-weight: bold;
+}
+
 .card>.card-header+.list-group,
 .card>.list-group+.card-footer {
   border-top: 0;
+
 }
 
 .card-body {
@@ -5319,6 +5326,7 @@ input[type="submit"].btn-block {
 
 .card-link+.card-link {
   margin-left: 1.25rem;
+
 }
 
 .card-header {

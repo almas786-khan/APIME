@@ -353,17 +353,40 @@ nav {
   }
 
   .side {}
+
   /* Stars */
 
 }
-.on{
+
+.on {
   color: #f8db03;
- }
- .off{
+}
+
+.off {
   color: #d2d0d0;
- }
- /* Reviews on Single Movie Page */
- .numOfReviews{
+}
+
+/* Reviews on Single Movie Page */
+.numOfReviews {
   margin: auto;
   margin-left: 0;
- }
+}
+
+/*documentation page*/
+.mb-0>a {
+  display: block;
+  position: relative;
+}
+
+.mb-0>a:after {
+  content: "\f078";
+  /* fa-chevron-down */
+  font-family: 'FontAwesome';
+  position: absolute;
+  right: 0;
+}
+
+.mb-0>a[aria-expanded="true"]:after {
+  content: "\f077";
+  /* fa-chevron-up */
+}

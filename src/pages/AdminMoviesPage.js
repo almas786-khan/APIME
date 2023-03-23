@@ -1,5 +1,5 @@
 import { Button, Form, Modal } from 'react-bootstrap';
-import React, { useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import axios from 'axios'
 import { BiTrash, BiPencil } from "react-icons/bi";
 import styled from 'styled-components'
@@ -21,25 +21,39 @@ function AdminMoviesPage() {
     const [openEditMovie, setOpenEditMovie] = useState(false);
     const url1 = '/apime/movies'
     const [fullUrl, setFullUrl] = useState()
+    const hasMountedRefs = useRef([]);
 
     useEffect(() => {
-        const initializePage = async () => {
-            try {
-                const { data: { movies } } = await axios.get(url1)
-                setMovies(movies)
+        const hasMounted = hasMountedRefs.current[0];
+        if (hasMounted) {
+            const initializePage = async () => {
+                try {
+                    const { data: { movies } } = await axios.get(url1)
+                    setMovies(movies)
+                }
+                catch (error) {
+                    console.log(error)
+                }
             }
-            catch (error) {
-                console.log(error)
-            }
+            initializePage();
         }
-        initializePage();
+        else {
+            hasMountedRefs.current[0] = true;
+        }
     }, [])
-    useEffect(() => {
-        const setRequest = async () => {
-            setFullUrl(`/apime/movies?title=${value}&category=${filter}&sort=${sortValue}`)
-        }
 
-        setRequest();
+    useEffect(() => {
+        const hasMounted = hasMountedRefs.current[1];
+        if (hasMounted) {
+            const setRequest = async () => {
+                setFullUrl(`/apime/movies?title=${value}&category=${filter}&sort=${sortValue}`)
+            }
+
+            setRequest();
+        }
+        else {
+            hasMountedRefs.current[1] = true;
+        }
 
     }, [value, filter, sortValue])
 

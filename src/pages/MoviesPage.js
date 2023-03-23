@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import Pagination from '../components/Pagination'
-import SearchBox from '../components/SearchBox'
 import styled from 'styled-components'
 import axios from 'axios'
 import Movie from '../components/Movie'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
-import Sort from '../components/Sort'
+
 
 function MoviesPage({ use, setUse }) {
   const [movies, setMovies] = useState([])

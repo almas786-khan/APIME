@@ -372,3 +372,8 @@ nav {
   width: 110px;
   max-width: 100%;
  }
+ /* watch list image */
+ .watchLsImg{
+  width: 45%;
+  height: 150px;
+ }

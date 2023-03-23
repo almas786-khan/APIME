@@ -4,39 +4,49 @@ import ConfirmBox from '../components/ConfirmBox';
 
 
 const WatchList = ({ use, setUse }) => {
-    const [list, setList] = useState([{
-        movieId:
-        {
-            _id: '',
-            title: '',
-            yearReleased: 0
-        },
-        hasWatched: false
-    }]);
+    const [list, setList] = useState([
+    //     {
+    //     movieId:
+    //     {
+    //         _id: '',
+    //         title: '',
+    //         yearReleased: 0
+    //     },
+    //     hasWatched: false
+    // }
+]);
     const [delId, setDelId] = useState('');
     const [open, setOpen] = useState(false);
+    const [hasLoaded, setHasLoaded] = useState(false)
+
+    
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const listData = await axios.get('apime/watchlist')
+            try { 
+                const user = await axios.get('/apime/user/userCheck')
+                setUse(user.data.user.username)
+                const listData = await axios.get('/apime/watchlist')
                 console.log(listData.data.watchlists.movieItems[0].movieId.title)
 
                 setList(listData.data.watchlists.movieItems)
-                const user = await axios.get('/apime/user/userCheck')
-                setUse(user.data.user.username)
+               
+                //console.log(user)
             }
             catch (error) {
                 console.log(error.response);
             }
+            finally{
+                setHasLoaded(true)
+            }
         };
         fetchData();
 
-    }, []);
+    },[]);
     const changeWatchState = async (id) => {
 
         try {
-           await axios.put(`apime/watchlist/haswatched/${id}`);
+           await axios.put(`/apime/watchlist/haswatched/${id}`);
 
             const updatedList = list.map(item => {
                 if (item.movieId._id === id) {
@@ -61,7 +71,7 @@ const WatchList = ({ use, setUse }) => {
 
     const Removefunction = async () => {
         try {
-            const delMovie = await axios.delete(`apime/watchlist/${delId}`)
+            const delMovie = await axios.delete(`/apime/watchlist/${delId}`)
             setList(list.filter(item => item.movieId._id !== delId));
             setOpen(false);
             console.log('delete success!')
@@ -69,6 +79,10 @@ const WatchList = ({ use, setUse }) => {
         catch (error) {
             console.log(error.response);
         }
+    }
+
+    if(!hasLoaded){
+        return <h1>Loading...</h1>
     }
 
     return (
@@ -95,10 +109,10 @@ const WatchList = ({ use, setUse }) => {
                                     list.map(item => (
 
                                         <tr key={item.movieId._id} className='text-center'>
-                                            <td scope="row" className='align-middle' ></td>
+                                            <td scope="row" className='align-middle' ><img className='watchLsImg' src={item.movieId.image} alt={item.movieId.title}></img></td>
                                             <td className='align-middle'>{item.movieId.title}</td>
                                             <td className='align-middle'>{item.movieId.yearReleased}</td>
-                                            <td className='w-25'>
+                                            <td className='w-25 align-middle'>
                                                 {item.hasWatched ?
 
                                                     (<a className="btn btn-success mr-3 btn-same">Watched</a>) :

@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaHome, FaUser } from "react-icons/fa"
+import { FaHome, FaUser,FaVoteYea} from "react-icons/fa"
 import { GoDeviceCameraVideo, GoBook } from "react-icons/go";
 
 import { BiLogIn } from "react-icons/bi";
@@ -27,17 +27,22 @@ export const links = [
     },
     {
         id: 4,
+        url: '/watchlist',
+        text: 'WatchList',
+        icon: <FaVoteYea />
+    },
+    {
+        id: 5,
         url: '/login',
         text: 'Login',
         icon: <BiLogIn />
     },
     {
-        id: 5,
+        id: 6,
         url: '/Register',
         text: 'Register',
         icon: <FaUser />
-    },
-
+    }
 
 
 ]

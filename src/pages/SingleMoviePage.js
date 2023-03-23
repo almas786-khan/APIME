@@ -3,23 +3,37 @@ import axios from 'axios';
 //import useSWR from 'swr';
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import Stars from '../components/Stars';
+
 import AddReview from '../components/AddReview';
+import EditReview from '../components/EditReview';
+import DeleteReview from '../components/ConfirmBox';
+
 import Reviews from '../components/Reviews';
 import Pagination from '../components/Pagination';
 
 const SingleMoviePage = ({ use, setUse }) => {
 
     const { _id } = useParams();
-    const errRef = useRef();
     const [movie, setMovie] = useState([]);
-    const [rating, setRating] = useState([]);
+    const [categories, setCategories] = useState();
+    const [actors, setActors] = useState();
     const [reviews, setReviews] = useState([]);
+    const [inWatchlist, setInWatchlist] = useState(false)
     const [totalReviews, setTotalReviews] = useState(0)
     const [currentPage, setCurrentPage] = useState(1);
     const [reviewsPerPage] = useState(2);
+
     const [openAddReview, setOpenAddReview] = useState(false);
+    const [openEditReview, setOpenEditReview] = useState(false);
+    const [openDeleteReview, setOpenDeleteReview] = useState(false);
+
     const url = `/apime/movies/${_id}`;
-    const [sample, setSample] = useState('');
+
+    const [hasLoaded, setHasLoaded] = useState(false)
+
+    const hasComment = useRef(false)
+    const userReview = useRef(null)
+    const movieId = useRef(null)
 
     //get current reviews
     const indexOfLastReview = currentPage * reviewsPerPage;
@@ -28,6 +42,33 @@ const SingleMoviePage = ({ use, setUse }) => {
     const totalPages = Math.ceil(reviews.length / reviewsPerPage);
 
 
+    useEffect(() => {
+        const fetch = async () =>{
+            try{
+                const {movie:{_id:mId}} = await fetchData()
+                await checkWatchList(mId)
+            }
+            catch(error){
+                console.log(error)
+            }
+        }
+        fetch()
+    }, []);
+
+    const handleOpenDeleteModal = () => {
+        setOpenDeleteReview(true);
+    };
+    const handleCloseDeleteModal = () => {
+        setOpenDeleteReview(false);
+    };
+
+    const handleOpenEditModal = () => {
+        setOpenEditReview(true);
+    };
+    const handleCloseEditModal = () => {
+        setOpenEditReview(false);
+    };
+
     const handleOpenAddModal = () => {
         setOpenAddReview(true);
     };
@@ -35,76 +76,122 @@ const SingleMoviePage = ({ use, setUse }) => {
     const handleCloseAddModal = () => {
         setOpenAddReview(false);
     };
+
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
-  
 
-    const fetchData = useCallback(async () => {
+    const fetchData = async () => {
+        console.log('fetchData')
         try {
-            const { data: { movie, reviewCount, reviews } } = await axios.get(url)
             const user = await axios.get('/apime/user/userCheck')
+            setUse(user.data.user.username)
 
+            const { data: { movie, reviewCount, reviews, actors} } = await axios.get(url)
+
+            userReview.current = reviews.find(review => review.user.username === user.data.user.username)
+            if(userReview.current){
+                hasComment.current = true
+            }
+            else{
+                hasComment.current = false
+            }
+            movieId.current = movie._id
             setMovie(movie)
-            setRating(parseFloat(movie.movieRating).toFixed(2))
+
+            const actorNames = actors.map(a => a.fullName)
+            setActors(actorNames.join(", "))
+            
+            const category = movie.category.join(", ")
+            setCategories(category)
+
             setReviews(reviews)
             setTotalReviews(reviewCount)
-            setUse(user.data.user.username)
+            console.log(movie)
+            return {movie};
         }
         catch (error) {
-            console.log(error.response);
+            console.log(error);
+            throw error;
         }
-    }, [url]);
+    };
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+    const checkWatchList = async (mId) =>{
+        try{
+            const {data:{isInWatchlist}} = await axios.get(`/apime/watchlist/movie/${mId}`)
+            console.log('is in watch list '+isInWatchlist)
+            if(isInWatchlist){
+                console.log('wish list is true')
+                setInWatchlist(true)
+            }
+            else{
+                setInWatchlist(false)
+            }
+        }
+        catch(error){
+            console.log(error)
+        }
+        finally{
+            setHasLoaded(true)
+        }
+    };
 
-    useEffect(() => {
-        fetchData();
-    }, [rating, reviews]);
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        console.log('handle submit')
+        try{
+            await fetchData()
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
+    const handleDelete = async () =>{
+        try{
+            setHasLoaded(false)
+            await axios.delete(`/apime/reviews/${userReview.current._id}`)
+            setOpenDeleteReview(false)
+            await fetchData()
+        }
+        catch(error){
+            console.log(error)
+        }
+        finally{
+            setHasLoaded(true)
+        }
+    }
+    
+    const addToWatchlist = async()=>{
+        try{
+            setHasLoaded(false)
+            await axios.put(`/apime/watchlist/${movieId.current}`)
+            await checkWatchList(movieId.current)
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
 
-    //             const { data: { movie, reviewCount,reviews } } = await axios.get(url)
-    //             const user = await axios.get('/apime/user/userCheck')
+    const removeFromWatchlist = async()=>{
+        try{
+            setHasLoaded(false)
+            await axios.delete(`/apime/watchlist/${movieId.current}`)
+            await checkWatchList(movieId.current)
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
 
-    //                 setMovie(movie)
-    //                 console.log(movie.movieRating)
-    //                 setRating(movie.movieRating)
-    //                 setReviews(reviews)
-    //                 setTotalReviews(reviewCount)
-    //                 setUse(user.data.user.username)
-
-
-    //         }
-    //         catch (error) {
-    //             console.log(error.response);
-    //         }
-    //     };
-    //     fetchData();
-
-    // },[]);
-    // useEffect(() => {
-    //     const updatedData = async () => {
-    //       try {
-    //         const { data: { movie, reviewCount, reviews } } = await axios.get(url)
-    //         setRating(movie.movieRating)
-    //         setReviews(reviews)
-    //         setTotalReviews(reviewCount)
-    //       }
-    //       catch (error) {
-    //         console.log(error.response);
-    //       }
-    //     };
-    //     updatedData();
-    //   }, [rating, reviews]);
-
+    if(!hasLoaded){
+        return <h1>Loading....</h1>
+    }
 
     return (
+
         <>
+
             <div className='container'>
                 <div className='title mt-3'>
                     <h2 role='heading' aria-level='1' >Single Movie page</h2>
@@ -124,13 +211,25 @@ const SingleMoviePage = ({ use, setUse }) => {
                             </div>
                             <div className='col-md-auto' style={{ fontSize: 20 }}>
                                 <div>
-                                    <Stars rating={rating} />
+                                    <Stars rating={movie.movieRating} />
                                 </div>
-                                <p>{rating} / 5 Average Rating</p>
-                                <p>Category: {movie.category}</p>
+                                <p>{movie.movieRating} / 5 Average Rating</p>
+                                <p>Category: {categories}</p>
                                 <p>Year Released: {movie.yearReleased}</p>
                                 <p>Director: {movie.director}</p>
                                 <p>Description: <br />{movie.description}</p>
+                                <p>Actors: {actors}</p>
+                                {inWatchlist ?
+                                <button
+                                    className='btn btn-primary' onClick={()=>removeFromWatchlist()}>
+                                    &#43; Remove from Watch List
+                                </button>
+                                :
+                                <button
+                                className='btn btn-primary' onClick={()=>addToWatchlist()}>
+                                &#43; Add to Watch List
+                            </button>
+                             }
                             </div>
                         </div>
                         <br />
@@ -139,12 +238,23 @@ const SingleMoviePage = ({ use, setUse }) => {
                             <h3 className='text-center'>Reviews and Ratings</h3>
                             <div className='d-flex'>
                                 <p className='numOfReviews font-weight-bold'>({totalReviews}) Reviews</p>
-                                <button
+                            {hasComment.current ?
+                            <><button
+                                className='btn btn-primary float-right' onClick={handleOpenEditModal}>
+                                Edit Review
+                            </button>
+                            <button className='btn btn-primary float-right' onClick={handleOpenDeleteModal}>
+                                Delete Review
+                                </button></>
+                            :
+                                (<button
                                     className='btn btn-primary float-right' onClick={handleOpenAddModal}>
                                     Add a Review
-                                </button>
-
-                                {openAddReview && <AddReview movieId={_id} onClose={handleCloseAddModal} />}
+                                </button>)
+                            }
+                                {openAddReview && <AddReview movieId={movieId.current} onClose={handleCloseAddModal} onSubmit={handleSubmit} />}
+                                {openEditReview && <EditReview reviewId={userReview.current._id} onClose={handleCloseEditModal} onSubmit={handleSubmit} />}
+                                <DeleteReview open={openDeleteReview} closeDialog={handleCloseDeleteModal} deleteFunction={handleDelete} deleteId="review" />
                             </div>
                             <hr />
                             <Reviews reviews={currentReviews} />
@@ -157,7 +267,6 @@ const SingleMoviePage = ({ use, setUse }) => {
                 </div>
             </div>
         </>
-
 
     )
 };

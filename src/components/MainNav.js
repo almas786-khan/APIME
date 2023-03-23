@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import logo from '../assets/iconn.svg'
-import { FaBars} from 'react-icons/fa';
+import { FaBars } from 'react-icons/fa';
 import { links } from '../data'
 import axios from 'axios'
 
@@ -51,6 +51,7 @@ const MainNav = ({ use, setUse }) => {
     e.preventDefault()
     window.location.href = '/reviews';
   }
+
   return (
     <nav>
       <div className='nav-center'>
@@ -66,44 +67,21 @@ const MainNav = ({ use, setUse }) => {
           <ul className='links'>
             {links.map((link) => {
               const { id, url, text, icon } = link
-              // if (id != 6 && id != 5) {
-              //   return (
-              //     <li key={id}>
-              //       <a href={url}>{icon} {text}</a>
-              //     </li>
-              //   )
-              // }
-              // if (use == '' && (id == 6 || id == 5)) {
-              //   return (
-              //     <li key={id}>
-              //       <a href={url}>{icon} {text}</a>
-              //     </li>
-              //   )
-              // }
-              if (id != 6 && id != 5 && id !=4) {
+              if (id != 4 && id != 5) {
                 return (
                   <li key={id}>
                     <a href={url}>{icon} {text}</a>
                   </li>
                 )
               }
-              if (id != 6 && id != 5 && use != '' && currentuser!='administrator') {
+              if (use == '' && (id == 4 || id == 5)) {
                 return (
                   <li key={id}>
                     <a href={url}>{icon} {text}</a>
                   </li>
                 )
               }
-              if (use == '' && (id == 6 || id == 5)) {
-                return (
-                  <li key={id}>
-                    <a href={url}>{icon} {text}</a>
-                  </li>
-                )
-              }
-              
             })}
-            
             {use == '' ? ''
               : currentuser == 'administrator' ?
                 (<>

@@ -3,7 +3,7 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { FaStar } from "react-icons/fa";
 import GreenCheck from '../assets/green-checkmark.png'
 import axios from 'axios';
-function AddReview({ movieId, onClose, onSubmit }) {
+function AddReview({ movieId, onClose }) {
   const errRef = useRef();
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -14,17 +14,8 @@ function AddReview({ movieId, onClose, onSubmit }) {
 
 
   const handleClose = () => {
-    console.log('handle close')
-    setShowModal(false)
-    setSuccess(false)
     onClose();
   };
-
-  const handleHide = () => {
-    console.log('handle hide')
-    setShowModal(false)
-    setSuccess(false)
-  }
 
   useEffect(() => {
     setErrMsg('');
@@ -39,7 +30,6 @@ function AddReview({ movieId, onClose, onSubmit }) {
       const data = await axios.post("/apime/reviews", { movie: movieId, reviewRating: rating, reviewComment: comment })
       setSuccess(true);
       setShowModal(true);
-      onSubmit(event)
     }
     catch (error) {
       console.log(error)
@@ -51,7 +41,9 @@ function AddReview({ movieId, onClose, onSubmit }) {
   return (
     <>
       {success ? (
-        <Modal show={showModal} onClose={handleHide} aria-labelledby="contained-modal-title-vcenter" centered>
+        <Modal show={showModal} onHide={() => setShowModal(false)} aria-labelledby="contained-modal-title-vcenter" centered>
+           
+           <Button variant="close ml-auto mr-2 mt-2" onClick={() => setShowModal(false)}>&times;</Button>
          
           <Modal.Body className='mx-auto text-center'> 
             <img src={GreenCheck} alt='green check'/>
@@ -59,7 +51,7 @@ function AddReview({ movieId, onClose, onSubmit }) {
             <p>Your review has been submitted successfully.</p>
           </Modal.Body>
           <Modal.Footer>
-            <Button role = 'close button' variant="secondary" onClick={handleClose}>Close</Button>
+            <Button role = 'close button' variant="secondary" onClick={() => setShowModal(false) && setSuccess(false)}>Close</Button>
           </Modal.Footer>
         </Modal>
       ) : (

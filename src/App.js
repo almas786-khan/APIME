@@ -10,7 +10,6 @@ import SingleMoviePage from './pages/SingleMoviePage';
 import Login from './pages/LoginPage';
 import Register from './pages/RegisterPage';
 import AdminPage from './pages/AdminPage';
-import WatchList from './pages/WatchList'
 import AdminMoviesPage from './pages/AdminMoviesPage';
 
 import React from 'react';
@@ -42,7 +41,6 @@ function App() {
 
           <Route path='/movies/:_id' element={<SingleMoviePage use={use} setUse={setUse} />} />
           <Route path='/documentation' element={<Documentation use={use} setUse={setUse} />} />
-          <Route path='/watchlist' element={<WatchList use={use} setUse={setUse} />} />
           <Route path='/reviews' element={<AdminPage use={use} setUse={setUse} />} />
 
           <Route path='/login' element={<Login use={use} setUse={setUse} />} />

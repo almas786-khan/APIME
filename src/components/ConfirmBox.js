@@ -11,7 +11,7 @@ function ConfirmBox({ open, closeDialog, deleteFunction, deleteId }) {
         <Dialog
             fullWidth
             open={open}
-            maxWidth="sm"
+            maxWidth="md"
             scroll="body"
             onClose={closeDialog}
             TransitionComponent={Transition}

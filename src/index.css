@@ -372,18 +372,6 @@ nav {
   margin-left: 0;
 }
 
-/* button size same */
-.btn-same {
-  width: 110px;
-  max-width: 100%;
-}
-
-/* watch list image */
-.watchLsImg {
-  width: 45%;
-  height: 150px;
-}
-
 /*documentation page*/
 .mb-0>a {
   display: block;

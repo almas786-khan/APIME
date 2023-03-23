@@ -16,9 +16,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange}) => {
       }
     }
     return (
-      <>
-    {totalPages > 0 ?
-      (<ul className="pagination d-flex justify-content-center">
+    
+      <ul className="pagination d-flex justify-content-center">
         <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
           <a className="page-link" onClick={() => onPageChange(currentPage - 1)}>&laquo; Previous</a>
         </li>
@@ -30,10 +29,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange}) => {
         <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
           <a className="page-link" onClick={() => onPageChange(currentPage + 1)}>Next &raquo;</a>
         </li>
-      </ul>)
-      : ''
-        }
-        </>
+      </ul>
     );
   };
 

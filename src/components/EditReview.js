@@ -3,7 +3,7 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { FaStar } from "react-icons/fa";
 import GreenCheck from '../assets/green-checkmark.png'
 import axios from 'axios';
-function AddReview({ movieId, onClose, onSubmit }) {
+function EditReview({ reviewId, onClose, onSubmit }) {
   const errRef = useRef();
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -26,9 +26,24 @@ function AddReview({ movieId, onClose, onSubmit }) {
     setSuccess(false)
   }
 
-  useEffect(() => {
-    setErrMsg('');
-  }, [rating, comment]);
+  useEffect(()=>{
+    const initializeModal = async () =>{
+        try{
+            const {data:{review}} = await axios.get(`/apime/reviews/${reviewId}`)
+            console.log('edit review modal: '+review)
+            setRating(review.reviewRating)
+            setComment(review.reviewComment)
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+    initializeModal()
+  }, [])
+
+//   useEffect(() => {
+//     setErrMsg('');
+//   }, [rating, comment]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -36,7 +51,7 @@ function AddReview({ movieId, onClose, onSubmit }) {
     
     try {
 
-      const data = await axios.post("/apime/reviews", { movie: movieId, reviewRating: rating, reviewComment: comment })
+      const data = await axios.put(`/apime/reviews/${reviewId}`, { reviewRating: rating, reviewComment: comment })
       setSuccess(true);
       setShowModal(true);
       onSubmit(event)
@@ -56,7 +71,7 @@ function AddReview({ movieId, onClose, onSubmit }) {
           <Modal.Body className='mx-auto text-center'> 
             <img src={GreenCheck} alt='green check'/>
             <Modal.Title>Thank you for your review!</Modal.Title>
-            <p>Your review has been submitted successfully.</p>
+            <p>Your review has been updated successfully.</p>
           </Modal.Body>
           <Modal.Footer>
             <Button role = 'close button' variant="secondary" onClick={handleClose}>Close</Button>
@@ -66,7 +81,7 @@ function AddReview({ movieId, onClose, onSubmit }) {
         <Modal show={true} onHide={handleClose} backdrop="static">
           <Modal.Header>
            
-            <Modal.Title>Add a Review</Modal.Title>
+            <Modal.Title>Edit Review</Modal.Title>
             <Button variant="btn-close" onClick={handleClose}>&times;
             </Button>
           </Modal.Header>
@@ -109,7 +124,7 @@ function AddReview({ movieId, onClose, onSubmit }) {
               Cancel
             </Button>
             <button className='btn btn-primary' type="submit" onClick={handleSubmit} form="writeReview">
-              Submit
+              Save Changes
             </button>
           </Modal.Footer>
 
@@ -119,4 +134,4 @@ function AddReview({ movieId, onClose, onSubmit }) {
   );
 }
 
-export default AddReview;
+export default EditReview;

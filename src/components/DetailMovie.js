@@ -4,23 +4,25 @@ import { Modal, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { useEffect } from 'react';
 
-function DetailMovie(props) {
-    const [title, setTitle] = useState(props.title);
-    const [yearReleased, setYearReleased] = useState(props.yearReleased);
-    const [director, setDirector] = useState(props.director);
-    const [description, setDescription] = useState(props.description);
-    const [category, setCategory] = useState(props.category);
+function DetailMovie({ _id, onClose }) {
+    const [title, setTitle] = useState("");
+    const [yearReleased, setYearReleased] = useState("");
+    const [director, setDirector] = useState("");
+    const [description, setDescription] = useState("");
+    const [category, setCategory] = useState("");
 
 
     const [show, setShow] = useState(false);
 
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        onClose();
+    };
     const handleShow = () => setShow(true);
     useEffect(() => {
         const getMovie = async () => {
 
             try {
-                const { data: { movie } } = await axios.get(`/apime/movies/${props._id}`);
+                const { data: { movie } } = await axios.get(`/apime/movies/${_id}`);
                 //console.log(movie);
                 setTitle(movie.title);
                 setYearReleased(movie.yearReleased);
@@ -34,28 +36,25 @@ function DetailMovie(props) {
         }
 
         getMovie();
-    }, [props._id]);
+    }, [_id]);
     return (
         <>
-            <Button
+            {/* <Button
                 variant="primary float-right" onClick={handleShow}>
                 DETAILS
-            </Button>
+            </Button> */}
 
             <Modal
-                show={show}
+                show={true}
                 onHide={handleClose}
-                backdrop="static"
-                keyboard={false}
-            >
+                backdrop="static">
                 <Modal.Header>
                     <Modal.Title>Movie Details</Modal.Title>
-                    <Button variant="btn-close" onClick={handleClose}>╳
+                    <Button variant="btn-close" onClick={handleClose}>&times;
                     </Button>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form id='updateMovie'
-                    >
+                    <Form id='detailMovie'>
 
                         <br />
                         <Form.Group className="mb-3" >

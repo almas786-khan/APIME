@@ -3,6 +3,7 @@
 Variables
 ===============
 */
+@import url('https://use.fontawesome.com/releases/v5.13.0/css/all.css');
 
 :root {
   --clr-primary-02: hsl(22, 31%, 88%);
@@ -353,27 +354,82 @@ nav {
   }
 
   .side {}
+
   /* Stars */
 
 }
-.on{
+
+.on {
   color: #f8db03;
- }
- .off{
+}
+
+.off {
   color: #d2d0d0;
- }
- /* Reviews on Single Movie Page */
- .numOfReviews{
+}
+
+/* Reviews on Single Movie Page */
+.numOfReviews {
   margin: auto;
   margin-left: 0;
- }
- /* button size same */
- .btn-same{
+}
+
+/* button size same */
+.btn-same {
   width: 110px;
   max-width: 100%;
- }
- /* watch list image */
- .watchLsImg{
+}
+
+/* watch list image */
+.watchLsImg {
   width: 45%;
   height: 150px;
- }
+}
+
+/*documentation page*/
+.docButton {
+  text-transform: uppercase;
+  background: var(--clr-primary-5);
+  color: var(--clr-primary-10);
+  padding: 0.175rem 0.375rem;
+  letter-spacing: var(--spacing);
+  display: inline-block;
+  font-weight: 400;
+  transition: var(--transition);
+  font-size: 0.875rem;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius);
+  border-color: transparent;
+  height: 25px;
+}
+
+.docButton:hover {
+  color: var(--clr-primary-1);
+  background: var(--clr-primary-7);
+}
+
+.mb-0>a>button {
+  margin-right: 1rem;
+
+
+}
+
+.mb-0>a {
+  display: block;
+  position: relative;
+  font-weight: bold;
+
+}
+
+.mb-0>a:after {
+  content: "\f058";
+  /* fa-chevron-down */
+  font-family: "Font Awesome 5 Free";
+  position: absolute;
+  right: 0;
+}
+
+.mb-0>a[aria-expanded="true"]:after {
+  content: "\f057";
+  /* fa-chevron-up */
+}

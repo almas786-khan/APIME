@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import logo from '../assets/iconn.svg'
-import { FaBars} from 'react-icons/fa';
+import { FaBars } from 'react-icons/fa';
 import { links } from '../data'
 import axios from 'axios'
 
@@ -49,7 +49,7 @@ const MainNav = ({ use, setUse }) => {
 
   const HandleAdmin = (e) => {
     e.preventDefault()
-    window.location.href = '/reviews';
+    window.location.href = '/adminReviews';
   }
   return (
     <nav>
@@ -80,14 +80,14 @@ const MainNav = ({ use, setUse }) => {
               //     </li>
               //   )
               // }
-              if (id != 6 && id != 5 && id !=4) {
+              if (id != 6 && id != 5 && id != 4) {
                 return (
                   <li key={id}>
                     <a href={url}>{icon} {text}</a>
                   </li>
                 )
               }
-              if (id != 6 && id != 5 && use != '' && currentuser!='administrator') {
+              if (id != 6 && id != 5 && use != '' && currentuser != 'administrator') {
                 return (
                   <li key={id}>
                     <a href={url}>{icon} {text}</a>
@@ -101,9 +101,9 @@ const MainNav = ({ use, setUse }) => {
                   </li>
                 )
               }
-              
+
             })}
-            
+
             {use == '' ? ''
               : currentuser == 'administrator' ?
                 (<>

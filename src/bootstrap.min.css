@@ -4816,9 +4816,11 @@ input[type="submit"].btn-block {
   display: flex;
   -ms-flex-direction: column;
   flex-direction: column;
-  padding-left: 0;
+  padding-left: 1rem;
   margin-bottom: 0;
   list-style: none;
+  background-color: hsl(20, 31%, 88%);
+
 }
 
 .navbar-nav .nav-link {
@@ -5259,6 +5261,7 @@ input[type="submit"].btn-block {
   -ms-flex-direction: column;
   flex-direction: column;
   min-width: 0;
+  text-align: left;
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;

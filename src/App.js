@@ -9,7 +9,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SingleMoviePage from './pages/SingleMoviePage';
 import Login from './pages/LoginPage';
 import Register from './pages/RegisterPage';
-import AdminPage from './pages/AdminPage';
+import AdminReviewPage from './pages/AdminReviewPage';
 import WatchList from './pages/WatchList'
 import AdminMoviesPage from './pages/AdminMoviesPage';
 
@@ -43,7 +43,8 @@ function App() {
           <Route path='/movies/:_id' element={<SingleMoviePage use={use} setUse={setUse} />} />
           <Route path='/documentation' element={<Documentation use={use} setUse={setUse} />} />
           <Route path='/watchlist' element={<WatchList use={use} setUse={setUse} />} />
-          <Route path='/reviews' element={<AdminPage use={use} setUse={setUse} />} />
+          <Route path='/adminReviews' element={<AdminReviewPage use={use} setUse={setUse} />} />
+          <Route path='/adminMovies' element={<AdminMoviesPage use={use} setUse={setUse} />} />
 
           <Route path='/login' element={<Login use={use} setUse={setUse} />} />
 

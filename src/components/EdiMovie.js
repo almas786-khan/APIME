@@ -20,8 +20,16 @@ function EdiMovie({ movieId, onClose, onSubmit }) {
 
 
     const handleClose = () => {
+        setShowModal(false)
+        setSuccess(false)
         onClose();
     };
+
+    const handleHide = () => {
+        console.log('handle hide')
+        setShowModal(false)
+        setSuccess(false)
+      }
 
     useEffect(() => {
         setErrMsg('');
@@ -70,7 +78,7 @@ function EdiMovie({ movieId, onClose, onSubmit }) {
     return (
         <>
             {success ? (
-                <Modal show={showModal} onHide={() => setShowModal(false)} aria-labelledby="contained-modal-title-vcenter" centered>
+                <Modal show={showModal} onClose={handleHide} aria-labelledby="contained-modal-title-vcenter" centered>
 
                     <Button variant="close ml-auto mr-2 mt-2" onClick={() => setShowModal(false)}>&times;</Button>
 
@@ -80,7 +88,7 @@ function EdiMovie({ movieId, onClose, onSubmit }) {
                         <p>Your movie has been updated successfully.</p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button role='close button' variant="secondary" onClick={() => setShowModal(false) && setSuccess(false)}>Close</Button>
+                        <Button role='close button' variant="secondary" onClick={handleClose}>Close</Button>
                     </Modal.Footer>
                 </Modal>
             ) : (

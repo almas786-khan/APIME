@@ -30,7 +30,6 @@ function AdminMoviesPage({use, setUse}) {
 
     
     const basedUrl = '/apime/movies?page=1';
-    const [fullUrl, setFullUrl] = useState('/apime/movies?page=1')
 
     const [deleteData, setDeleteData] = useState({});
     const [targetEditMovieId, setTargetEditMovieId] = useState(null);
@@ -42,7 +41,7 @@ function AdminMoviesPage({use, setUse}) {
     const [moviesPerPage] = useState(9);
     const [totalMovies, setTotalMovies] = useState(1);
 
-    const hasMounted = useRef(false)
+    const hasMounted = useRef([])
 
     const totalPages = Math.ceil(totalMovies / moviesPerPage)
 
@@ -50,7 +49,7 @@ function AdminMoviesPage({use, setUse}) {
         console.log('hello init use effect')
         const initializePage = async () =>{
             try{
-                await fetchData()
+                await fetchData(1)
                 await fetchUser()
                 console.log('finished initialize page')
             }
@@ -61,9 +60,11 @@ function AdminMoviesPage({use, setUse}) {
         initializePage()
       }, [])
 
-    const fetchData = async () => {
+    const fetchData = async (pageNumber) => {
         try {
-            const { data: { movies, totalCount } } = await axios.get(basedUrl)
+            const { data: { movies, totalCount } } = await axios
+            .get(`/apime/movies?page=${currentPageRef.current}&title=${valueRef.current}&category=${filterRef.current}&sort=${sortRef.current}`)
+            setCurrentPage(pageNumber)
             setMovies(movies)
             setTotalMovies(totalCount)
             return {movies, totalCount}
@@ -84,27 +85,6 @@ function AdminMoviesPage({use, setUse}) {
           }
     }
 
-    useEffect(()=>{
-        if(hasMounted.current){
-          console.log('1st use effect')
-          const exec = async() => {
-            try {
-              const { data: { movies, totalCount } } = await axios.get(fullUrl)
-              setMovies(movies);
-              setTotalMovies(totalCount)
-            }
-            catch (error) {
-              console.log(error)
-            }
-          }
-          exec()
-        }
-        else{
-          hasMounted.current = true
-        }
-    
-      },[fullUrl])
-
       const clearFilter = async () => {
         setValue("");
         setFilter("");
@@ -112,6 +92,8 @@ function AdminMoviesPage({use, setUse}) {
         valueRef.current = ''
         sortRef.current = ''
         filterRef.current = ''
+        currentPageRef.current = 1
+        setCurrentPage(currentPageRef.current)
         try {
           const { data: { movies, totalCount } } = await axios.get(basedUrl)
           setMovies(movies);
@@ -131,14 +113,22 @@ function AdminMoviesPage({use, setUse}) {
         sortRef.current = sortValue
         filterRef.current = filter
         currentPageRef.current = 1
-        setCurrentPage(currentPageRef.current)
-        setFullUrl(`/apime/movies?page=${currentPageRef.current}&title=${valueRef.current}&category=${filterRef.current}&sort=${sortRef.current}`)
+        try{
+            await fetchData(currentPageRef.current)
+        }
+        catch(error){
+            console.log(error)
+        }
       }
 
       const handlePageChange = async (pageNumber) => {
         currentPageRef.current = pageNumber
-        setCurrentPage(pageNumber);
-        setFullUrl(`/apime/movies?page=${currentPageRef.current}&title=${valueRef.current}&category=${filterRef.current}&sort=${sortRef.current}`)
+        try{
+            await fetchData(currentPageRef.current)
+        }
+        catch(error){
+            console.log(error)
+        }
       };
 
     const handleOpenDetailModal = (movieId) => {
@@ -174,14 +164,33 @@ function AdminMoviesPage({use, setUse}) {
     }
     async function handleDelete() {
         const res = await axios.delete(`/apime/movies/${deleteData?._id}`);
-        await fetchData()
+        setValue("");
+        setFilter("");
+        setSortValue("");
+        valueRef.current = ''
+        sortRef.current = ''
+        filterRef.current = ''
+        currentPageRef.current = 1
         setOpen(false);
+        try{
+            await fetchData(currentPageRef.current)
+        }
+        catch(error){
+            console.log(error)
+        }
     }
 
     const handleSubmit = async(event) => {
         event.preventDefault()
+        setValue("");
+        setFilter("");
+        setSortValue("");
+        valueRef.current = ''
+        sortRef.current = ''
+        filterRef.current = ''
+        currentPageRef.current = 1
         try{
-            await fetchData()
+            await fetchData(currentPageRef.current)
         }
         catch(error){
             console.log(error)
@@ -194,7 +203,6 @@ function AdminMoviesPage({use, setUse}) {
 
     return (
         <Wrapper>
-
         <form>
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
         </form>

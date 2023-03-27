@@ -1,73 +1,154 @@
 import { Button, Form, Modal } from 'react-bootstrap';
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { BiTrash, BiPencil } from "react-icons/bi";
 import styled from 'styled-components'
 import AddMovie from '../components/AddMovie'
+import Pagination from '../components/Pagination'
 import swal from 'sweetalert';
 import ConfirmBox from '../components/ConfirmBox';
-import EditMovie from '../components/EditMovie';
+//import EditMovie from '../components/EditMovie';
 import DetailMovie from '../components/DetailMovie';
 import EdiMovie from '../components/EdiMovie';
 
-function AdminMoviesPage() {
+function AdminMoviesPage({use, setUse}) {
     const [movies, setMovies] = useState([])
+
     const [value, setValue] = useState('');
+    const valueRef = useRef('')
+
     const [sortValue, setSortValue] = useState('')
+    const sortRef = useRef('')
+    
     const [filter, setFilter] = useState('')
+    const filterRef = useRef('')
+
     const [open, setOpen] = useState(false);
-    const [deleteData, setDeleteData] = useState({});
     const [openAddMovie, setOpenAddMovie] = useState(false);
     const [openEditMovie, setOpenEditMovie] = useState(false);
-    const url1 = '/apime/movies'
-    const [fullUrl, setFullUrl] = useState()
+    const [openDetailMovie, setOpenDetailMovie] = useState(false);
+
+    
+    const basedUrl = '/apime/movies?page=1';
+    const [fullUrl, setFullUrl] = useState('/apime/movies?page=1')
+
+    const [deleteData, setDeleteData] = useState({});
+    const [targetEditMovieId, setTargetEditMovieId] = useState(null);
+    const [targetDetailMovieId, setTargetDetailMovieId] = useState(null);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const currentPageRef = useRef(1)
+  
+    const [moviesPerPage] = useState(9);
+    const [totalMovies, setTotalMovies] = useState(1);
+
+    const hasMounted = useRef(false)
+
+    const totalPages = Math.ceil(totalMovies / moviesPerPage)
 
     useEffect(() => {
-        const initializePage = async () => {
-            try {
-                const { data: { movies } } = await axios.get(url1)
-                setMovies(movies)
+        console.log('hello init use effect')
+        const initializePage = async () =>{
+            try{
+                await fetchData()
+                await fetchUser()
+                console.log('finished initialize page')
             }
-            catch (error) {
+            catch(error){
                 console.log(error)
             }
         }
-        initializePage();
-    }, [])
-    useEffect(() => {
-        const setRequest = async () => {
-            setFullUrl(`/apime/movies?title=${value}&category=${filter}&sort=${sortValue}`)
+        initializePage()
+      }, [])
+
+    const fetchData = async () => {
+        try {
+            const { data: { movies, totalCount } } = await axios.get(basedUrl)
+            setMovies(movies)
+            setTotalMovies(totalCount)
+            return {movies, totalCount}
+          }
+          catch (error) {
+            throw error
+          }
+    }
+
+    const fetchUser = async () => {
+        try { 
+            const {data:{user:{username}}} = await axios.get('apime/user/userCheck')
+            setUse(username)
+            return username
+          }
+          catch (error) {
+            throw error
+          }
+    }
+
+    useEffect(()=>{
+        if(hasMounted.current){
+          console.log('1st use effect')
+          const exec = async() => {
+            try {
+              const { data: { movies, totalCount } } = await axios.get(fullUrl)
+              setMovies(movies);
+              setTotalMovies(totalCount)
+            }
+            catch (error) {
+              console.log(error)
+            }
+          }
+          exec()
         }
+        else{
+          hasMounted.current = true
+        }
+    
+      },[fullUrl])
 
-        setRequest();
-
-    }, [value, filter, sortValue])
-
-    const clearFilter = async () => {
+      const clearFilter = async () => {
         setValue("");
         setFilter("");
         setSortValue("");
+        valueRef.current = ''
+        sortRef.current = ''
+        filterRef.current = ''
         try {
-            const { data: { movies } } = await axios.get(url1)
-            setMovies(movies);
-
+          const { data: { movies, totalCount } } = await axios.get(basedUrl)
+          setMovies(movies);
+          setTotalMovies(totalCount)
+    
         }
         catch (error) {
-            console.log(error)
+          console.log(error)
         }
+    
+      }
+      
+      const handleSearch = async (e) => {
+        e.preventDefault()
+    
+        valueRef.current = value
+        sortRef.current = sortValue
+        filterRef.current = filter
+        currentPageRef.current = 1
+        setCurrentPage(currentPageRef.current)
+        setFullUrl(`/apime/movies?page=${currentPageRef.current}&title=${valueRef.current}&category=${filterRef.current}&sort=${sortRef.current}`)
+      }
 
-    }
-    const handleSearch = async (e) => {
+      const handlePageChange = async (pageNumber) => {
+        currentPageRef.current = pageNumber
+        setCurrentPage(pageNumber);
+        setFullUrl(`/apime/movies?page=${currentPageRef.current}&title=${valueRef.current}&category=${filterRef.current}&sort=${sortRef.current}`)
+      };
 
-        e.preventDefault();
-        try {
-            const { data: { movies } } = await axios.get(fullUrl)
-            setMovies(movies);
-        }
-        catch (error) {
-            console.log(error)
-        }
-    }
+    const handleOpenDetailModal = (movieId) => {
+        setTargetDetailMovieId(movieId)
+        setOpenDetailMovie(true);
+    };
+
+    const handleCloseDetailModal = () => {
+        setOpenDetailMovie(false);
+    };
 
     const handleOpenAddModal = () => {
         setOpenAddMovie(true);
@@ -77,7 +158,8 @@ function AdminMoviesPage() {
         setOpenAddMovie(false);
     };
 
-    const handleOpenEditModal = () => {
+    const handleOpenEditModal = (movieId) => {
+        setTargetEditMovieId(movieId)
         setOpenEditMovie(true);
     };
 
@@ -85,69 +167,37 @@ function AdminMoviesPage() {
         setOpenEditMovie(false);
     };
 
-    const updateMovie = async (_id, title, yearReleased, director, description, category) => {
-        try {
-            console.log("this is id " + _id);
-            console.log("this is title " + title);
-            console.log("this is yearReleased " + yearReleased);
-            console.log("this is director " + director);
-            console.log("this is description " + description);
-            console.log("this is category " + category);
-            const res = await axios.put(`/apime/movies/${_id}`, {
-                title: title, yearReleased: yearReleased,
-                director: director, description: description, category: category
-            })
-            swal({
-                title: "Success!",
-                text: res.data.msg,
-                icon: "success",
-                button: "OK!",
-            }).then(function () {
-                window.location.reload(false);
-            });
-        }
-        catch (error) {
-            console.log(error);
-        }
-
-    }
-
     function openDelete(movie) {
         setOpen(true);
         setDeleteData(movie);
 
     }
-    function handleDelete() {
-
-        const res = axios.delete(`/apime/movies/${deleteData?._id}`);
+    async function handleDelete() {
+        const res = await axios.delete(`/apime/movies/${deleteData?._id}`);
+        await fetchData()
         setOpen(false);
-        window.location.reload(false);
-
     }
 
-    const handleSubmitMovie = async (event, title, image, yearReleased, director, description, category) => {
-        try {
-            event.preventDefault();
-            const formData = new FormData();
-            formData.append('movieImage', image);
-            const { data: { url, msg } } = await axios.post('/apime/movies/uploadMovieImage', formData);
-            console.log("this is msg " + msg);
-            console.log("this is url " + url);
-            const res = await axios.post('/apime/movies', {
-                title: title, image: url, yearReleased: yearReleased,
-                director: director, description: description, category: category
-            })
-            console.log(res);
-            //setOpen(false);
+    const handleSubmit = async(event) => {
+        event.preventDefault()
+        try{
+            await fetchData()
         }
-        catch (error) {
-
-            console.log("Error: " + error.response.data.msg);
+        catch(error){
+            console.log(error)
         }
     }
+
+    const startIndex = (currentPage - 1) * moviesPerPage;
+    const endIndex = startIndex + moviesPerPage;
+    const currentMovies = movies.slice(startIndex, endIndex);
+
     return (
         <Wrapper>
-            {/* <div className='container'> */}
+
+        <form>
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+        </form>
 
             <div className='row'>
                 <div className='col-sm-3'>
@@ -157,7 +207,7 @@ function AdminMoviesPage() {
                     </button>
 
                     {/* <AddMovie onSubmit={handleSubmitMovie} /> */}
-                    {openAddMovie && <AddMovie onClose={handleCloseAddModal} />}
+                    {openAddMovie && <AddMovie onClose={handleCloseAddModal} onSubmit={handleSubmit} />}
 
 
                     <form onSubmit={handleSearch}>
@@ -205,9 +255,10 @@ function AdminMoviesPage() {
                         <br />
                     </form>
                 </div>
-
                 <div className="col-sm-9">
+                {movies.length < 1 && <h3>No movie found</h3>}
                     <table className='table table-striped'>
+                        
                         <thead >
                             <tr>
                                 <th>Title</th>
@@ -220,7 +271,18 @@ function AdminMoviesPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {movies.length < 1 && <h3>No movie found</h3>}
+
+                        {openEditMovie && targetEditMovieId &&
+                                            <EdiMovie movieId={targetEditMovieId}
+                                                onClose={handleCloseEditModal}
+                                                onSubmit={handleSubmit} />
+                                        }
+
+                        {openDetailMovie && targetDetailMovieId &&
+                                            <DetailMovie movieId={targetDetailMovieId}
+                                                onClose={handleCloseDetailModal} />
+                                        }
+
                             {movies.map(movie => (
                                 <tr key={movie._id} >
 
@@ -231,38 +293,24 @@ function AdminMoviesPage() {
                                     <td></td>
                                     <td>
 
-                                        <form>
+                                        <div>
                                             <input type='hidden' name='id' value={movie._id} />
                                             <button className='btn' id={movie._id} type='button' onClick={() => openDelete(movie)}>Delete</button>
-                                        </form>
-                                    </td><td>
-
-                                        {/* working without validations */}
-                                        {/* <form>
-                                            <EditMovie _id={movie._id}
-                                                updateMovie={updateMovie}
-                                            />
-                                        </form> */}
-
-                                        {/* not working with validations */}
-                                        <button
-                                            className='btn btn-primary float-right' onClick={handleOpenEditModal}>
-                                            Edit
-                                        </button>
-                                        {openEditMovie &&
-                                            <EdiMovie _id={movie._id}
-                                                onClose={handleCloseEditModal} />
-                                        }
-
-
+                                            </div>
                                     </td>
                                     <td>
-                                        <form>
-                                            {/* <button id={movie._id} className='btn' type='button' >Details</button> */}
+                                        <button
+                                            className='btn btn-primary float-right' onClick={()=> handleOpenEditModal(movie._id)}>
+                                            Edit
+                                        </button>
+                                    </td>
+                                    <td>
+                                    <button className='btn' onClick={()=> handleOpenDetailModal(movie._id)}>Details</button>
+                                        {/* <form>
+                                            <button id={movie._id} className='btn' type='button' >Details</button>
                                             <DetailMovie _id={movie._id}
-
                                             />
-                                        </form>
+                                        </form> */}
                                     </td>
                                 </tr>
                             ))}
@@ -275,10 +323,7 @@ function AdminMoviesPage() {
                     deleteId="movie"
                 />
             </div>
-            {/* </div> */}
-
         </Wrapper >
-
     )
 }
 const Wrapper = styled.section`

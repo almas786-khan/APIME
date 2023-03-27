@@ -4,7 +4,7 @@ import { Modal, Form } from 'react-bootstrap';
 import axios from 'axios';
 import GreenCheck from '../assets/green-checkmark.png'
 
-function EdiMovie({ _id, onClose }) {
+function EdiMovie({ movieId, onClose, onSubmit }) {
 
     const errRef = useRef();
     const [title, setTitle] = useState("");
@@ -32,7 +32,7 @@ function EdiMovie({ _id, onClose }) {
         const getMovie = async () => {
 
             try {
-                const { data: { movie } } = await axios.get(`/apime/movies/${_id}`);
+                const { data: { movie } } = await axios.get(`/apime/movies/${movieId}`);
 
                 setTitle(movie.title);
                 setYearReleased(movie.yearReleased);
@@ -46,18 +46,19 @@ function EdiMovie({ _id, onClose }) {
         }
 
         getMovie();
-    }, [_id]);
+    }, [movieId]);
 
     const handleUpdate = async (event) => {
         event.preventDefault();
         try {
-            const res = await axios.put(`/apime/movies/${_id}`, {
+            const res = await axios.put(`/apime/movies/${movieId}`, {
                 title: title, yearReleased: yearReleased,
                 director: director, description: description, category: category
             })
             console.log(res);
             setSuccess(true);
             setShowModal(true);
+            onSubmit(event)
         }
         catch (error) {
             console.log(error);

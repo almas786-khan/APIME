@@ -4,7 +4,7 @@ import { Modal, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { useEffect } from 'react';
 
-function DetailMovie({ _id, onClose }) {
+function DetailMovie({ movieId, onClose }) {
     const [title, setTitle] = useState("");
     const [yearReleased, setYearReleased] = useState("");
     const [director, setDirector] = useState("");
@@ -22,7 +22,7 @@ function DetailMovie({ _id, onClose }) {
         const getMovie = async () => {
 
             try {
-                const { data: { movie } } = await axios.get(`/apime/movies/${_id}`);
+                const { data: { movie } } = await axios.get(`/apime/movies/${movieId}`);
                 //console.log(movie);
                 setTitle(movie.title);
                 setYearReleased(movie.yearReleased);
@@ -36,7 +36,7 @@ function DetailMovie({ _id, onClose }) {
         }
 
         getMovie();
-    }, [_id]);
+    }, [movieId]);
     return (
         <>
             {/* <Button

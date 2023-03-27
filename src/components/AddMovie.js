@@ -3,7 +3,7 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import GreenCheck from '../assets/green-checkmark.png'
 import axios from 'axios';
 
-function AddMovie({ onClose }) {
+function AddMovie({ onClose, onSubmit }) {
     const errRef = useRef();
     const [title, setTitle] = useState("");
     const [yearReleased, setYearReleased] = useState("");
@@ -40,6 +40,7 @@ function AddMovie({ onClose }) {
             })
             setSuccess(true);
             setShowModal(true);
+            onSubmit(event)
         }
         catch (error) {
             console.log(error.response.data.msg)

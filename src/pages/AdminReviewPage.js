@@ -3,6 +3,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import Review from '../components/Review'
 import styled from 'styled-components'
 import AdminPanel from '../components/AdminPanel';
+import { useNavigate } from 'react-router-dom'
 
 const AdminPage = ({ use, setUse }) => {
     const [reviews, setReviews] = useState([])
@@ -12,7 +13,7 @@ const AdminPage = ({ use, setUse }) => {
     const [url, setUrl] = useState()
     const hasMountedRefs = useRef([]);
     const url1 = '/apime/reviews'
-
+    const navigate = useNavigate();
     useEffect(() => {
         const hasMounted = hasMountedRefs.current[0];
         if (hasMounted) {
@@ -23,7 +24,9 @@ const AdminPage = ({ use, setUse }) => {
                 }
                 catch (error) {
                     console.log("hello admin review error")
-                    console.log(error)
+                    console.log(error.response.status)
+                    console.log(error.response.data.msg)
+                    navigate('/error', { state: { error: error.response.data.msg, code: error.response.status } })
 
                 }
             }

@@ -3,51 +3,90 @@ import React, { useRef, useEffect, useState } from 'react'
 import Review from '../components/Review'
 import styled from 'styled-components'
 import AdminPanel from '../components/AdminPanel';
+import Pagination from '../components/Pagination';
 import { useNavigate } from 'react-router-dom'
 
 const AdminPage = ({ use, setUse }) => {
+    
     const [reviews, setReviews] = useState([])
     const [toggle, setToggle] = useState(true);
     const [active, setActive] = useState(false);
     const [value, setValue] = useState('');
     const [url, setUrl] = useState()
+///////////////////////
+    const [currentPage, setCurrentPage] = useState(1);
+    const [reviewsPerPage] = useState(5);
+
+    const indexOfLastReview = currentPage * reviewsPerPage;
+    const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
+    const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
+    const totalPages = Math.ceil(reviews.length / reviewsPerPage);
+////////////////////////
     const hasMountedRefs = useRef([]);
     const url1 = '/apime/reviews'
     const navigate = useNavigate();
-    useEffect(() => {
-        const hasMounted = hasMountedRefs.current[0];
-        if (hasMounted) {
-            const setRequest = async () => {
-                try {
-                    const { data: { reviews } } = await axios.get(url1)
-                    setReviews(reviews)
-                }
-                catch (error) {
-                    console.log("hello admin review error")
-                    console.log(error.response.status)
-                    console.log(error.response.data.msg)
-                    navigate('/error', { state: { error: error.response.data.msg, code: error.response.status } })
 
-                }
-            }
-            setRequest();
-        }
+    // useEffect(() => {
+    //     const hasMounted = hasMountedRefs.current[0];
+    //     if (hasMounted) {
+    //         const setRequest = async () => {
+    //             try {
+    //                 const { data: { reviews } } = await axios.get(url1)
+    //                 setReviews(reviews)
+    //             }
+    //             catch (error) {
+    //                 console.log("hello admin review error")
+    //                 console.log(error.response.status)
+    //                 console.log(error.response.data.msg)
+    //                 navigate('/error', { state: { error: error.response.data.msg, code: error.response.status } })
 
-        else {
-            hasMountedRefs.current[0] = true;
-        }
-    }, [value])
+    //             }
+    //         }
+    //         setRequest();
+    //     }
+
+    //     else {
+    //         hasMountedRefs.current[0] = true;
+    //     }
+    // }, [value])
+
+    
 
     const handleSearch = async (e) => {
         e.preventDefault();
         try {
             const { data: { reviews } } = await axios.get(`apime/reviews/movie/${value}`)
             setReviews(reviews);
+            setCurrentPage(1);
         }
         catch (error) {
             console.log(error)
         }
     }
+
+    const handleReset = async (e) => {
+        e.preventDefault();
+        try {
+            await setRequest()
+            setCurrentPage(1);
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+    const setRequest = async () => {
+        try {
+            const { data: { reviews } } = await axios.get(url1)
+            setReviews(reviews)
+            return reviews
+        }
+        catch (error) {
+            navigate('/error', { state: { error: error.response.data.msg, code: error.response.status } })
+
+        }
+    }
+    
 
     useEffect(() => {
 
@@ -55,6 +94,7 @@ const AdminPage = ({ use, setUse }) => {
             try {
                 const data = await axios.get('apime/user/userCheck')
                 setUse(data.data.user.username)
+                await setRequest()
             }
             catch (error) {
                 console.log(error)
@@ -64,6 +104,10 @@ const AdminPage = ({ use, setUse }) => {
         initializePage();
 
     }, [])
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
 
     return (
         <Wrapper >
@@ -89,16 +133,20 @@ const AdminPage = ({ use, setUse }) => {
                                         <br />
                                         <input type='submit' value='Submit' className='submit-btn' />
                                     </form>
+                                    <form onSubmit={handleReset}>
+                                    <input type='submit' value='Reset' className='submit-btn' />
+                                    </form>
                                 </li>
                                 <br />
                                 <li>
                                     {reviews.length < 1 ? <h2>No Reviews Found for searched movie</h2> :
-                                        <Review reviews={reviews}></Review>}
+                                        <Review reviews={currentReviews}></Review>}
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
+                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
             </div>
         </Wrapper>
     );

@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 //import useSWR from 'swr';
 import React, { useRef, useEffect, useState, useCallback } from 'react';
@@ -34,6 +34,7 @@ const SingleMoviePage = ({ use, setUse }) => {
     const hasComment = useRef(false)
     const userReview = useRef(null)
     const movieId = useRef(null)
+    const navigate = useNavigate();
 
     //get current reviews
     const indexOfLastReview = currentPage * reviewsPerPage;
@@ -43,13 +44,14 @@ const SingleMoviePage = ({ use, setUse }) => {
 
 
     useEffect(() => {
-        const fetch = async () =>{
-            try{
-                const {movie:{_id:mId}} = await fetchData()
+        const fetch = async () => {
+            try {
+                const { movie: { _id: mId } } = await fetchData()
                 await checkWatchList(mId)
             }
-            catch(error){
+            catch (error) {
                 console.log(error)
+                navigate('/error', { state: { error: error.response.data.msg, code: error.response.status } })
             }
         }
         fetch()
@@ -87,13 +89,13 @@ const SingleMoviePage = ({ use, setUse }) => {
             const user = await axios.get('/apime/user/userCheck')
             setUse(user.data.user.username)
 
-            const { data: { movie, reviewCount, reviews, actors} } = await axios.get(url)
+            const { data: { movie, reviewCount, reviews, actors } } = await axios.get(url)
 
             userReview.current = reviews.find(review => review.user.username === user.data.user.username)
-            if(userReview.current){
+            if (userReview.current) {
                 hasComment.current = true
             }
-            else{
+            else {
                 hasComment.current = false
             }
             movieId.current = movie._id
@@ -101,14 +103,14 @@ const SingleMoviePage = ({ use, setUse }) => {
 
             const actorNames = actors.map(a => a.fullName)
             setActors(actorNames.join(", "))
-            
+
             const category = movie.category.join(", ")
             setCategories(category)
 
             setReviews(reviews)
             setTotalReviews(reviewCount)
             console.log(movie)
-            return {movie};
+            return { movie };
         }
         catch (error) {
             console.log(error);
@@ -116,22 +118,22 @@ const SingleMoviePage = ({ use, setUse }) => {
         }
     };
 
-    const checkWatchList = async (mId) =>{
-        try{
-            const {data:{isInWatchlist}} = await axios.get(`/apime/watchlist/movie/${mId}`)
-            console.log('is in watch list '+isInWatchlist)
-            if(isInWatchlist){
+    const checkWatchList = async (mId) => {
+        try {
+            const { data: { isInWatchlist } } = await axios.get(`/apime/watchlist/movie/${mId}`)
+            console.log('is in watch list ' + isInWatchlist)
+            if (isInWatchlist) {
                 console.log('wish list is true')
                 setInWatchlist(true)
             }
-            else{
+            else {
                 setInWatchlist(false)
             }
         }
-        catch(error){
+        catch (error) {
             console.log(error)
         }
-        finally{
+        finally {
             setHasLoaded(true)
         }
     };
@@ -139,52 +141,52 @@ const SingleMoviePage = ({ use, setUse }) => {
     const handleSubmit = async (event) => {
         event.preventDefault()
         console.log('handle submit')
-        try{
+        try {
             await fetchData()
         }
-        catch(error){
+        catch (error) {
             console.log(error)
         }
     }
 
-    const handleDelete = async () =>{
-        try{
+    const handleDelete = async () => {
+        try {
             setHasLoaded(false)
             await axios.delete(`/apime/reviews/${userReview.current._id}`)
             setOpenDeleteReview(false)
             await fetchData()
         }
-        catch(error){
+        catch (error) {
             console.log(error)
         }
-        finally{
+        finally {
             setHasLoaded(true)
         }
     }
-    
-    const addToWatchlist = async()=>{
-        try{
+
+    const addToWatchlist = async () => {
+        try {
             setHasLoaded(false)
             await axios.put(`/apime/watchlist/${movieId.current}`)
             await checkWatchList(movieId.current)
         }
-        catch(error){
+        catch (error) {
             console.log(error)
         }
     }
 
-    const removeFromWatchlist = async()=>{
-        try{
+    const removeFromWatchlist = async () => {
+        try {
             setHasLoaded(false)
             await axios.delete(`/apime/watchlist/${movieId.current}`)
             await checkWatchList(movieId.current)
         }
-        catch(error){
+        catch (error) {
             console.log(error)
         }
     }
 
-    if(!hasLoaded){
+    if (!hasLoaded) {
         return <h1>Loading....</h1>
     }
 
@@ -220,16 +222,16 @@ const SingleMoviePage = ({ use, setUse }) => {
                                 <p>Description: <br />{movie.description}</p>
                                 <p>Actors: {actors}</p>
                                 {inWatchlist ?
-                                <button
-                                    className='btn btn-primary' onClick={()=>removeFromWatchlist()}>
-                                    &#43; Remove from Watch List
-                                </button>
-                                :
-                                <button
-                                className='btn btn-primary' onClick={()=>addToWatchlist()}>
-                                &#43; Add to Watch List
-                            </button>
-                             }
+                                    <button
+                                        className='btn btn-primary' onClick={() => removeFromWatchlist()}>
+                                        &#43; Remove from Watch List
+                                    </button>
+                                    :
+                                    <button
+                                        className='btn btn-primary' onClick={() => addToWatchlist()}>
+                                        &#43; Add to Watch List
+                                    </button>
+                                }
                             </div>
                         </div>
                         <br />
@@ -238,20 +240,20 @@ const SingleMoviePage = ({ use, setUse }) => {
                             <h3 className='text-center'>Reviews and Ratings</h3>
                             <div className='d-flex'>
                                 <p className='numOfReviews font-weight-bold'>({totalReviews}) Reviews</p>
-                            {hasComment.current ?
-                            <><button
-                                className='btn btn-primary float-right' onClick={handleOpenEditModal}>
-                                Edit Review
-                            </button>
-                            <button className='btn btn-primary float-right' onClick={handleOpenDeleteModal}>
-                                Delete Review
-                                </button></>
-                            :
-                                (<button
-                                    className='btn btn-primary float-right' onClick={handleOpenAddModal}>
-                                    Add a Review
-                                </button>)
-                            }
+                                {hasComment.current ?
+                                    <><button
+                                        className='btn btn-primary float-right' onClick={handleOpenEditModal}>
+                                        Edit Review
+                                    </button>
+                                        <button className='btn btn-primary float-right' onClick={handleOpenDeleteModal}>
+                                            Delete Review
+                                        </button></>
+                                    :
+                                    (<button
+                                        className='btn btn-primary float-right' onClick={handleOpenAddModal}>
+                                        Add a Review
+                                    </button>)
+                                }
                                 {openAddReview && <AddReview movieId={movieId.current} onClose={handleCloseAddModal} onSubmit={handleSubmit} />}
                                 {openEditReview && <EditReview reviewId={userReview.current._id} onClose={handleCloseEditModal} onSubmit={handleSubmit} />}
                                 <DeleteReview open={openDeleteReview} closeDialog={handleCloseDeleteModal} deleteFunction={handleDelete} deleteId="review" />

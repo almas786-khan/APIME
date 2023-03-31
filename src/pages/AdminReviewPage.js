@@ -7,13 +7,13 @@ import Pagination from '../components/Pagination';
 import { useNavigate } from 'react-router-dom'
 
 const AdminPage = ({ use, setUse }) => {
-    
+
     const [reviews, setReviews] = useState([])
     const [toggle, setToggle] = useState(true);
     const [active, setActive] = useState(false);
     const [value, setValue] = useState('');
     const [url, setUrl] = useState()
-///////////////////////
+    ///////////////////////
     const [currentPage, setCurrentPage] = useState(1);
     const [reviewsPerPage] = useState(5);
 
@@ -21,7 +21,7 @@ const AdminPage = ({ use, setUse }) => {
     const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
     const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
     const totalPages = Math.ceil(reviews.length / reviewsPerPage);
-////////////////////////
+    ////////////////////////
     const hasMountedRefs = useRef([]);
     const url1 = '/apime/reviews'
     const navigate = useNavigate();
@@ -50,17 +50,23 @@ const AdminPage = ({ use, setUse }) => {
     //     }
     // }, [value])
 
-    
+
 
     const handleSearch = async (e) => {
         e.preventDefault();
         try {
-            const { data: { reviews } } = await axios.get(`apime/reviews/movie/${value}`)
-            setReviews(reviews);
-            setCurrentPage(1);
+            if (value === '') {
+                await setRequest()
+            }
+            else {
+                const { data: { reviews } } = await axios.get(`apime/reviews/movie/${value}`)
+                setReviews(reviews);
+                setCurrentPage(1);
+            }
         }
         catch (error) {
             console.log(error)
+            console.log(error.response.data.msg);
         }
     }
 
@@ -69,9 +75,11 @@ const AdminPage = ({ use, setUse }) => {
         try {
             await setRequest()
             setCurrentPage(1);
+            setValue('');
         }
         catch (error) {
             console.log(error)
+
         }
     }
 
@@ -86,7 +94,7 @@ const AdminPage = ({ use, setUse }) => {
 
         }
     }
-    
+
 
     useEffect(() => {
 
@@ -98,6 +106,7 @@ const AdminPage = ({ use, setUse }) => {
             }
             catch (error) {
                 console.log(error)
+                navigate('/error', { state: { error: error.response.data.msg, code: error.response.status } })
             }
         }
 
@@ -127,14 +136,17 @@ const AdminPage = ({ use, setUse }) => {
                                             className='search-input'
                                             placeholder='Search Review by Movie Title'
                                             value={value}
+
                                             onChange={(e) => setValue(e.target.value)}
                                         />
 
                                         <br />
                                         <input type='submit' value='Submit' className='submit-btn' />
                                     </form>
+
                                     <form onSubmit={handleReset}>
-                                    <input type='submit' value='Reset' className='submit-btn' />
+                                        <br />
+                                        <input type='submit' value='Reset' className='clear-btn' />
                                     </form>
                                 </li>
                                 <br />
@@ -167,11 +179,18 @@ background: var(--clr-primary-00);
   }
  .submit-btn {
     display: block;
-    width: 148px;
+    width: 20%;
     margin: 0 auto;
     text-align: center;
     background: var(--clr-primary-01);
     color: var(--clr-white);
     
-}`
+}
+.clear-btn {
+background: var(--clr-red-dark);
+    color: var(--clr-white);
+    display: block;
+    width: 20%;
+    margin: 0 auto;
+    text-align: center;}`
 export default AdminPage;

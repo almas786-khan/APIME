@@ -4,12 +4,12 @@ function AdminPanel() {
     return (
 
         <nav>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/adminReviews">Admin Reviews</a>
+            <ul className='navbar-nav'>
+                <li className='nav-item'>
+                    <a className='nav-link' href="/adminReviews">Admin Reviews</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/adminMovies">Admin Movies</a>
+                <li className='nav-item'>
+                    <a className='nav-link' href="/adminMovies">Admin Movies</a>
                 </li>
 
             </ul>

@@ -9,12 +9,28 @@ function AddMovie({ onClose, onSubmit }) {
     const [yearReleased, setYearReleased] = useState("");
     const [director, setDirector] = useState("");
     const [description, setDescription] = useState("");
-    const [category, setCategory] = useState("");
+    const [category, setCategory] = useState({ categories: [], category: [] });
     const [image, setImage] = useState("");
     const [success, setSuccess] = useState(false);
     const [errMsg, setErrMsg] = useState('');
     const [showModal, setShowModal] = useState(false);
 
+    const handleChange = (event) => {
+        console.log(event.target);
+        const { value, checked } = event.target;
+        const { categories } = category;
+        console.log(`value: ${value} is  checked: ${checked}`);
+        if (checked) {
+            setCategory({ categories: [...categories, value], category: [...categories, value] });
+        }
+        else {
+            setCategory({
+                categories: categories.filter((cat) => cat !== value),
+                category: categories.filter((cat) => cat !== value),
+            });
+        }
+
+    };
 
 
     const handleClose = () => {
@@ -27,7 +43,7 @@ function AddMovie({ onClose, onSubmit }) {
         console.log('handle hide')
         setShowModal(false)
         setSuccess(false)
-      }
+    }
 
     useEffect(() => {
         setErrMsg('');
@@ -40,11 +56,16 @@ function AddMovie({ onClose, onSubmit }) {
         const formData = new FormData();
         formData.append('movieImage', image);
 
+        if (category.category == null || category.category.length === 0) {
+            category.category = null;
+        }
+
+        console.log("inside submit" + category.category);
         try {
             const { data: { url, msg } } = await axios.post('/apime/movies/uploadMovieImage', formData);
             const res = await axios.post('/apime/movies', {
                 title: title, image: url, yearReleased: yearReleased,
-                director: director, description: description, category: category
+                director: director, description: description, category: category.category
             })
             setSuccess(true);
             setShowModal(true);
@@ -141,23 +162,44 @@ function AddMovie({ onClose, onSubmit }) {
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="movieCategory">
                                 <Form.Label>Movie Category</Form.Label>
-                                <Form.Control as="select" id='category' name='category' aria-label="Default select example"
-                                    required
-                                    value={category} onChange={(event) => setCategory(event.target.value)}>
-                                    <option value=''>Choose...</option>
-                                    <option value='Drama'>Drama</option>
-                                    <option value='Action'>Action</option>
-                                    <option value='Adventure'>Adventure</option>
-                                    <option value='Fantasy'>Fantasy</option>
-                                    <option value='Horror'>Horror</option>
-                                    <option value='Mystery'>Mystery</option>
-                                    <option value='Romance'>Romance</option>
-                                    <option value='Sci-fi'>Sci-fi</option>
-                                    <option value='Thriller'>Thriller</option>
-                                </Form.Control>
-                                <Form.Control.Feedback type="invalid">
-                                    Please select movie category.
-                                </Form.Control.Feedback>
+                                <fieldset>
+                                    <div className="form-check-inline">
+                                        <input className="form-check-input" type="checkbox" id="Drama" name="categories" value="Drama" onChange={handleChange} />
+                                        <label className="form-check-label" htmlFor="Drama">Drama</label>
+                                    </div>
+                                    <div className="form-check-inline">
+                                        <input className="form-check-input" type="checkbox" id="Action" name="categories" value="Action" onChange={handleChange} />
+                                        <label className="form-check-label" htmlFor="Action">Action</label>
+                                    </div>
+                                    <div className="form-check-inline">
+                                        <input className="form-check-input" type="checkbox" id="Adventure" name="categories" value="Adventure" onChange={handleChange} />
+                                        <label className="form-check-label" htmlFor="Adventure">Adventure</label>
+                                    </div>
+                                    <div className="form-check-inline">
+                                        <input className="form-check-input" type="checkbox" id="Fantasy" name="categories" value="Fantasy" onChange={handleChange} />
+                                        <label className="form-check-label" htmlFor="Fantasy">Fantasy</label>
+                                    </div>
+                                    <div className="form-check-inline">
+                                        <input className="form-check-input" type="checkbox" id="Horror" name="categories" value="Horror" onChange={handleChange} />
+                                        <label className="form-check-label" htmlFor="Horror">Horror</label>
+                                    </div>
+                                    <div className="form-check-inline">
+                                        <input className="form-check-input" type="checkbox" id="Mystery" name="categories" value="Mystery" onChange={handleChange} />
+                                        <label className="form-check-label" htmlFor="Mystery">Mystery</label>
+                                    </div>
+                                    <div className="form-check-inline">
+                                        <input className="form-check-input" type="checkbox" id="Romance" name="categories" value="Romance" onChange={handleChange} />
+                                        <label className="form-check-label" htmlFor="Romance">Romance</label>
+                                    </div>
+                                    <div className="form-check-inline">
+                                        <input className="form-check-input" type="checkbox" id="Sci-fi" name="categories" value="Sci-fi" onChange={handleChange} />
+                                        <label className="form-check-label" htmlFor="Sci-fi">Sci-fi</label>
+                                    </div>
+                                    <div className="form-check-inline">
+                                        <input className="form-check-input" type="checkbox" id="Thriller" name="categories" value="Thriller" onChange={handleChange} />
+                                        <label className="form-check-label" htmlFor="Thriller">Thriller</label>
+                                    </div>
+                                </fieldset>
                             </Form.Group>
                         </Form>
                     </Modal.Body>

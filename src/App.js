@@ -50,7 +50,7 @@ function App() {
 
           <Route path='/register' element={<Register />} />
 
-          <Route path='*' element={<Error />} />
+          <Route path='/error' element={<Error />} />
         </Routes>
         <Footer />
       </BrowserRouter>

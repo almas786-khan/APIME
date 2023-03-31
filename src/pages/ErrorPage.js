@@ -1,11 +1,16 @@
 import { Link } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import styled from 'styled-components'
 const Error = () => {
+  const location = useLocation();
+  let error = location.state.error;
+  let code = location.state.code;
+
   return (
     <Wrapper className='page-100'>
       <section>
-        <h1>404</h1>
-        <h3>Sorry, the page you tried cannot be found</h3>
+        <h1>{code}</h1>
+        <h3>{error}</h3>
         <Link to='/' className='btn'>
           back home
         </Link>

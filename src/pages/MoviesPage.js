@@ -7,7 +7,9 @@ import Movie from '../components/Movie'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
+
 import Sort from '../components/Sort'
+import { generatePath, useNavigate } from 'react-router-dom'
 
 function MoviesPage({ use, setUse }) {
   const [movies, setMovies] = useState([])
@@ -21,7 +23,7 @@ function MoviesPage({ use, setUse }) {
   const [filter, setFilter] = useState('')
   const filterRef = useRef('')
 
-  const [currentPage, setCurrentPage] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
   const currentPageRef = useRef(1)
 
   const [moviesPerPage] = useState(9);
@@ -30,30 +32,32 @@ function MoviesPage({ use, setUse }) {
   const [trigger, setTrigger] = useState(false)
   const hasMounted = useRef(false)
   const basedUrl = '/apime/movies?page=1';
-
+  const navigate = useNavigate();
 
   const totalPages = Math.ceil(totalMovies / moviesPerPage)
 
-  useEffect(()=>{
-    if(hasMounted.current){
+  useEffect(() => {
+    if (hasMounted.current) {
       console.log('1st use effect')
-      const exec = async() => {
+      const exec = async () => {
         try {
           const { data: { movies, totalCount } } = await axios.get(fullUrl)
           setMovies(movies);
           setTotalMovies(totalCount)
         }
         catch (error) {
-          console.log(error)
+          console.log(error.response.data.msg)
+          navigate('/error', { state: { error: error.response.data.msg, code: error.response.status } })
+
         }
       }
       exec()
     }
-    else{
+    else {
       hasMounted.current = true
     }
 
-  },[fullUrl])
+  }, [fullUrl])
 
   useEffect(() => {
     console.log('hello init use effect')
@@ -68,13 +72,14 @@ function MoviesPage({ use, setUse }) {
       }
       catch (error) {
         console.log(error)
+
       }
     }
 
     initializePage();
 
   }, [])
-  
+
   const clearFilter = async () => {
     setValue("");
     setFilter("");
@@ -82,6 +87,8 @@ function MoviesPage({ use, setUse }) {
     valueRef.current = ''
     sortRef.current = ''
     filterRef.current = ''
+    currentPageRef.current = 1
+    setCurrentPage(currentPageRef.current)
     try {
       const { data: { movies, totalCount } } = await axios.get(basedUrl)
       setMovies(movies);

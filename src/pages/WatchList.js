@@ -1,52 +1,55 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import ConfirmBox from '../components/ConfirmBox';
+import { useNavigate } from 'react-router-dom'
 
 
 const WatchList = ({ use, setUse }) => {
     const [list, setList] = useState([
-    //     {
-    //     movieId:
-    //     {
-    //         _id: '',
-    //         title: '',
-    //         yearReleased: 0
-    //     },
-    //     hasWatched: false
-    // }
-]);
+        //     {
+        //     movieId:
+        //     {
+        //         _id: '',
+        //         title: '',
+        //         yearReleased: 0
+        //     },
+        //     hasWatched: false
+        // }
+    ]);
     const [delId, setDelId] = useState('');
     const [open, setOpen] = useState(false);
     const [hasLoaded, setHasLoaded] = useState(false)
+    const navigate = useNavigate();
 
-    
+
 
     useEffect(() => {
         const fetchData = async () => {
-            try { 
+            try {
                 const user = await axios.get('/apime/user/userCheck')
                 setUse(user.data.user.username)
                 const listData = await axios.get('/apime/watchlist')
                 console.log(listData.data.watchlists.movieItems[0].movieId.title)
 
                 setList(listData.data.watchlists.movieItems)
-               
+
                 //console.log(user)
             }
             catch (error) {
                 console.log(error.response);
+                navigate('/error', { state: { error: error.response.data.msg, code: error.response.status } })
             }
-            finally{
+            finally {
                 setHasLoaded(true)
             }
         };
         fetchData();
 
-    },[]);
+    }, []);
     const changeWatchState = async (id) => {
 
         try {
-           await axios.put(`/apime/watchlist/haswatched/${id}`);
+            await axios.put(`/apime/watchlist/haswatched/${id}`);
 
             const updatedList = list.map(item => {
                 if (item.movieId._id === id) {
@@ -81,7 +84,7 @@ const WatchList = ({ use, setUse }) => {
         }
     }
 
-    if(!hasLoaded){
+    if (!hasLoaded) {
         return <h1>Loading...</h1>
     }
 

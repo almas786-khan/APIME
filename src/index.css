@@ -433,3 +433,11 @@ nav {
   content: "\f057";
   /* fa-chevron-up */
 }
+/* Single Movie page */
+.singleMovieImg{
+  width: 10rem;
+  height: auto;
+}
+.singleMovieText{
+  font-size: 20px;
+}

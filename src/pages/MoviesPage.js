@@ -176,7 +176,7 @@ function MoviesPage({ use, setUse }) {
 
         <div>
           <section>
-            <div className='section-center featured'>
+            <div className='section featured'>
               {movies.length < 1 ? <h3>Sorry, no movie matched your search.</h3> :
                 movies.map(mv => (
                   <Movie key={mv._id}{...mv}>
@@ -222,17 +222,19 @@ const Wrapper = styled.section`
   background: var(--clr-primary-00);
 
   .featured {
-    margin: 4rem auto;
+    margin: auto 3.5rem auto auto;
     display: grid;
    
-    gap: 2.5rem;
+    gap: 3rem;
     img {
       height: 225px;
       
     }
   }
   .title{
-    color :var(--clr-primary-01)
+    color :var(--clr-primary-01);
+    margin-left: 10.5rem;
+
   }
   .btn {
     display: block;
@@ -255,8 +257,9 @@ const Wrapper = styled.section`
       position: sticky;
       top: 1rem;
       float:left;
-      width:25%;
-      padding-left: 150px;
+      width:10%;
+      margin-left: 3rem;
+      margin-right: 3rem;
      
     }
   }
@@ -276,7 +279,6 @@ const Wrapper = styled.section`
     background: var(--clr-primary-01);
     color: var(--clr-white);
   }
-   
 `
 
 export default MoviesPage;

@@ -195,32 +195,43 @@ const SingleMoviePage = ({ use, setUse }) => {
         <>
 
             <div className='container'>
-                <div className='title mt-3'>
+                <div className='title mt-5'>
                     <h2 role='heading' aria-level='1' >Single Movie page</h2>
                     <div className='underline'></div>
                     <Link to='/movies'>back to movies</Link></div>
-                <div className='section'>
+                <div className='section pt-3'>
                     <div className='container'>
                         <div className='row'>
                             <div className='col'>
-                                <h2>{movie.title}</h2>
+                                <div className='container'>
+                                    <div className='row'>
+                                        <h2>{movie.title}</h2>
+                                    </div>
+                                    <div className='row'>
+                                        <Stars rating={movie.movieRating} /> &nbsp; 
+                                        <p>{movie.movieRating} / 5 Average Rating</p>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                         <br />
                         <div className='row'>
-                            <div className='col-md-4'>
-                                <img src={movie.image}></img>
+                            <div className='col-md-3'>
+                                <img className='singleMovieImg' src={movie.image}></img>
                             </div>
-                            <div className='col-md-auto' style={{ fontSize: 20 }}>
-                                <div>
-                                    <Stars rating={movie.movieRating} />
-                                </div>
-                                <p>{movie.movieRating} / 5 Average Rating</p>
+                            <div className='col nt-5 singleMovieText'>
+                            
                                 <p>Category: {categories}</p>
                                 <p>Year Released: {movie.yearReleased}</p>
                                 <p>Director: {movie.director}</p>
-                                <p>Description: <br />{movie.description}</p>
-                                <p>Actors: {actors}</p>
+                                
+                            </div>
+                        </div>
+                        <div className='row mt-3'>
+                            <div className='col singleMovieText'>
+                            <p>Description: <br />{movie.description}</p>
+                                {/* <p>Actors: {actors}</p> */}
                                 {inWatchlist ?
                                     <button
                                         className='btn btn-primary' onClick={() => removeFromWatchlist()}>
@@ -233,6 +244,7 @@ const SingleMoviePage = ({ use, setUse }) => {
                                     </button>
                                 }
                             </div>
+
                         </div>
                         <br />
                         <br />
@@ -242,7 +254,7 @@ const SingleMoviePage = ({ use, setUse }) => {
                                 <p className='numOfReviews font-weight-bold'>({totalReviews}) Reviews</p>
                                 {hasComment.current ?
                                     <><button
-                                        className='btn btn-primary float-right' onClick={handleOpenEditModal}>
+                                        className='btn btn-primary float-right mr-2' onClick={handleOpenEditModal}>
                                         Edit Review
                                     </button>
                                         <button className='btn btn-primary float-right' onClick={handleOpenDeleteModal}>

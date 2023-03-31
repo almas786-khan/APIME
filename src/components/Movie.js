@@ -17,7 +17,7 @@ const Movie = ({ image, title, _id, category, movieRating }) => {
       </div>
       <footer className='mt-2'>
         <div className='row'>
-          <div className='col-md-8'>
+          {/* <div className='col-md-8'>
             <p className='font-weight-bold'>{title}</p>
           </div>
           <div className='col-6 col-md-4'>
@@ -29,7 +29,16 @@ const Movie = ({ image, title, _id, category, movieRating }) => {
                 <Stars rating={movieRating} />
               </div>
             </div>
-          </div>
+          </div> */}
+          <p className='font-weight-bold text-start'>{title}</p>
+          <div className='row'>
+              <div className='col-md-2'>
+                {(parseFloat(movieRating)).toFixed(2)}
+              </div>
+              <div className='col'>
+                <Stars rating={movieRating} />
+              </div>
+            </div>
           
         </div>
         <div></div>

@@ -27,6 +27,7 @@ const WatchList = ({ use, setUse }) => {
         const fetchData = async () => {
             try {
                 const user = await axios.get('/apime/user/userCheck')
+                
                 setUse(user.data.user.username)
                 const listData = await axios.get('/apime/watchlist')
                 console.log(listData.data.watchlists.movieItems[0].movieId.title)

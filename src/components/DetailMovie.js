@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { Modal, Form } from 'react-bootstrap';
 import axios from 'axios';
+import Multiselect from 'multiselect-react-dropdown';
 import { useEffect } from 'react';
 
 function DetailMovie({ movieId, onClose }) {
@@ -100,20 +101,23 @@ function DetailMovie({ movieId, onClose }) {
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>Movie Category</Form.Label>
-                            <Form.Control as="select" id='category' name='category' aria-label="Default select example"
-                                disabled
-                                value={category} >
-                                <option value=''>Choose...</option>
-                                <option value='Drama'>Drama</option>
-                                <option value='Action'>Action</option>
-                                <option value='Adventure'>Adventure</option>
-                                <option value='Fantasy'>Fantasy</option>
-                                <option value='Horror'>Horror</option>
-                                <option value='Mystery'>Mystery</option>
-                                <option value='Romance'>Romance</option>
-                                <option value='Sci-fi'>Sci-fi</option>
-                                <option value='Thriller'>Thriller</option>
-                            </Form.Control>
+                            <Multiselect
+                                disable={true}
+                                isObject={false}
+                                onKeyPressFn={function noRefCheck() { }}
+                                selectedValues={category}
+                                options={[
+                                    'Drama',
+                                    'Action',
+                                    'Adventure',
+                                    'Fantasy',
+                                    'Horror',
+                                    'Mystery',
+                                    'Romance',
+                                    'Sci-fi',
+                                    'Thriller'
+                                ]}
+                            />
 
                         </Form.Group>
                     </Form>

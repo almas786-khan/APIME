@@ -3,6 +3,8 @@ import Button from 'react-bootstrap/Button';
 import { Modal, Form } from 'react-bootstrap';
 import axios from 'axios';
 import GreenCheck from '../assets/green-checkmark.png'
+import Multiselect from 'multiselect-react-dropdown';
+
 
 function EdiMovie({ movieId, onClose, onSubmit }) {
 
@@ -17,6 +19,24 @@ function EdiMovie({ movieId, onClose, onSubmit }) {
     const [errMsg, setErrMsg] = useState('');
     const [showModal, setShowModal] = useState(false);
 
+    const handleChange = (event) => {
+
+        console.log(event);
+        setCategory(event);
+        /* const { value, checked } = event.target;
+        const { categories } = category;
+        console.log(`value: ${value} is  checked: ${checked}`);
+        if (checked) {
+            setCategory({ categories: [...categories, value], category: [...categories, value] });
+        }
+        else {
+            setCategory({
+                categories: categories.filter((cat) => cat !== value),
+                category: categories.filter((cat) => cat !== value),
+            });
+        } */
+
+    };
 
 
     const handleClose = () => {
@@ -29,7 +49,7 @@ function EdiMovie({ movieId, onClose, onSubmit }) {
         console.log('handle hide')
         setShowModal(false)
         setSuccess(false)
-      }
+    }
 
     useEffect(() => {
         setErrMsg('');
@@ -56,8 +76,16 @@ function EdiMovie({ movieId, onClose, onSubmit }) {
         getMovie();
     }, [movieId]);
 
+
     const handleUpdate = async (event) => {
         event.preventDefault();
+        console.log('inside handle update')
+        console.log(category.length);
+        if (category.length === 0) {
+            setErrMsg('Please select at least one category.');
+            errRef.current.scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
         try {
             const res = await axios.put(`/apime/movies/${movieId}`, {
                 title: title, yearReleased: yearReleased,
@@ -99,7 +127,7 @@ function EdiMovie({ movieId, onClose, onSubmit }) {
                         </Button>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form id='updateMovie' onSubmit={handleUpdate}>
+                        <Form id='updateMovie' >
 
                             <br />
                             <Form.Group className="mb-3" >
@@ -153,23 +181,41 @@ function EdiMovie({ movieId, onClose, onSubmit }) {
                             </Form.Group>
                             <Form.Group className="mb-3">
                                 <Form.Label>Movie Category</Form.Label>
-                                <Form.Control as="select" id='category' name='category' aria-label="Default select example"
-                                    required
-                                    value={category} onChange={(event) => setCategory(event.target.value)}>
-                                    <option value=''>Choose...</option>
-                                    <option value='Drama'>Drama</option>
-                                    <option value='Action'>Action</option>
-                                    <option value='Adventure'>Adventure</option>
-                                    <option value='Fantasy'>Fantasy</option>
-                                    <option value='Horror'>Horror</option>
-                                    <option value='Mystery'>Mystery</option>
-                                    <option value='Romance'>Romance</option>
-                                    <option value='Sci-fi'>Sci-fi</option>
-                                    <option value='Thriller'>Thriller</option>
-                                </Form.Control>
-                                <Form.Control.Feedback type="invalid">
-                                    Please select movie category.
-                                </Form.Control.Feedback>
+                                <Multiselect
+                                    isObject={false}
+                                    onSelect={handleChange}
+                                    onRemove={handleChange}
+                                    selectedValues={category}
+                                    options={[
+                                        'Drama',
+                                        'Action',
+                                        'Adventure',
+                                        'Fantasy',
+                                        'Horror',
+                                        'Mystery',
+                                        'Romance',
+                                        'Sci-fi',
+                                        'Thriller'
+                                    ]}
+
+                                />
+                                {/*  <Multiselect
+                                    isObject={false}
+                                    onChange={this.handleChange}
+                                    selectedValues={category}
+                                    options={[
+                                        'Drama',
+                                        'Action',
+                                        'Adventure',
+                                        'Fantasy',
+                                        'Horror',
+                                        'Mystery',
+                                        'Romance',
+                                        'Sci-fi',
+                                        'Thriller'
+                                    ]}
+                                />
+ */}
                             </Form.Group>
 
                         </Form>
@@ -179,7 +225,7 @@ function EdiMovie({ movieId, onClose, onSubmit }) {
                         <Button variant="secondary" onClick={handleClose}>
                             Cancel
                         </Button>
-                        <button className='btn btn-primary' type="submit" form="updateMovie">
+                        <button className='btn btn-primary' type="submit" form="updateMovie" onClick={handleUpdate}>
                             Update
                         </button>
                     </Modal.Footer>

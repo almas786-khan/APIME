@@ -208,7 +208,7 @@ const SingleMoviePage = ({ use, setUse }) => {
                                         <h2>{movie.title}</h2>
                                     </div>
                                     <div className='row'>
-                                        <Stars rating={movie.movieRating} /> &nbsp; 
+                                        <Stars rating={movie.movieRating} /> &nbsp;
                                         <p>{movie.movieRating} / 5 Average Rating</p>
                                     </div>
                                 </div>
@@ -221,27 +221,29 @@ const SingleMoviePage = ({ use, setUse }) => {
                                 <img className='singleMovieImg' src={movie.image}></img>
                             </div>
                             <div className='col nt-5 singleMovieText'>
-                            
+
                                 <p>Category: {categories}</p>
                                 <p>Year Released: {movie.yearReleased}</p>
                                 <p>Director: {movie.director}</p>
-                                
+
                             </div>
                         </div>
                         <div className='row mt-3'>
                             <div className='col singleMovieText'>
-                            <p>Description: <br />{movie.description}</p>
+                                <p>Description: <br />{movie.description}</p>
                                 {/* <p>Actors: {actors}</p> */}
-                                {inWatchlist ?
-                                    <button
-                                        className='btn btn-primary' onClick={() => removeFromWatchlist()}>
-                                        &#43; Remove from Watch List
-                                    </button>
-                                    :
-                                    <button
-                                        className='btn btn-primary' onClick={() => addToWatchlist()}>
-                                        &#43; Add to Watch List
-                                    </button>
+                                {use === 'Admin' ? '' :
+                                    <div>{inWatchlist ?
+                                        <button
+                                            className='btn btn-primary' onClick={() => removeFromWatchlist()}>
+                                            &#43; Remove from Watch List
+                                        </button>
+                                        :
+                                        <button
+                                            className='btn btn-primary' onClick={() => addToWatchlist()}>
+                                            &#43; Add to Watch List
+                                        </button>
+                                    }</div>
                                 }
                             </div>
 

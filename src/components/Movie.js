@@ -9,18 +9,19 @@ const Movie = ({ image, title, _id, category, movieRating }) => {
 
   return (
     <Wrapper>
+     
       <div className='container'>
         <img src={image} alt={title} />
         <Link to={`/movies/${_id}`} className='link'>
           <FaSearch />
         </Link>
       </div>
-      <footer className='mt-2'>
+      <footer className='movieText mt-2'>
         <div className='row'>
-          {/* <div className='col-md-8'>
+          <div className='col-md-8'>
             <p className='font-weight-bold'>{title}</p>
           </div>
-          <div className='col-6 col-md-4'>
+          <div className='col-md-4'>
             <div className='row justify-content-end'>
               <div className='col-md-2'>
                 {(parseFloat(movieRating)).toFixed(2)}
@@ -29,19 +30,10 @@ const Movie = ({ image, title, _id, category, movieRating }) => {
                 <Stars rating={movieRating} />
               </div>
             </div>
-          </div> */}
-          <p className='font-weight-bold text-start'>{title}</p>
-          <div className='row'>
-              <div className='col-md-2'>
-                {(parseFloat(movieRating)).toFixed(2)}
-              </div>
-              <div className='col'>
-                <Stars rating={movieRating} />
-              </div>
-            </div>
+          </div>
+         
           
         </div>
-        <div></div>
       </footer>
     </Wrapper>
   )
@@ -50,11 +42,42 @@ const Movie = ({ image, title, _id, category, movieRating }) => {
 
 
 const Wrapper = styled.article`
-  .container {
-    position: relative;
-    background: var(--clr-primary-02);
-    border-radius: var(--radius);
+
+.movieText{
+  width: 100%; 
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 576px) {
+
+  .movieText {
+    max-width: 540px;
   }
+}
+
+@media (min-width: 768px) {
+
+  .movieText {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+
+  .movieText {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+
+  .movieText{
+    max-width: 1140px;
+  }
+}
+
+  
   img {
     width: 100%;
     display: block;

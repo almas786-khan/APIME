@@ -116,6 +116,7 @@ function MoviesPage({ use, setUse }) {
     currentPageRef.current = pageNumber
     setCurrentPage(pageNumber);
     setFullUrl(`/apime/movies?page=${currentPageRef.current}&title=${valueRef.current}&category=${filterRef.current}&sort=${sortRef.current}`)
+    
   };
 
   const startIndex = (currentPage - 1) * moviesPerPage;
@@ -176,7 +177,7 @@ function MoviesPage({ use, setUse }) {
 
         <div>
           <section>
-            <div className='section featured'>
+            <div className='featured'>
               {movies.length < 1 ? <h3>Sorry, no movie matched your search.</h3> :
                 movies.map(mv => (
                   <Movie key={mv._id}{...mv}>
@@ -222,7 +223,7 @@ const Wrapper = styled.section`
   background: var(--clr-primary-00);
 
   .featured {
-    margin: auto 3.5rem auto auto;
+    margin-right: 3.5rem;
     display: grid;
    
     gap: 3rem;
@@ -236,6 +237,8 @@ const Wrapper = styled.section`
     margin-left: 10.5rem;
 
   }
+
+  
   .btn {
     display: block;
     width: 148px;

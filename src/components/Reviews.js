@@ -9,19 +9,18 @@ const Reviews = ({ reviews }) => {
                  <div className='card border-info'>
                      <div className='card-body'>
                          <div className='row justify-content-between'>
-                             <div className='col'>
-                                 {review.user.username}
-                             </div>
-                             <div className='col'>
-                                 <Stars rating={review.reviewRating} />
-                             </div>
-                         </div>
-                         <div className='row'>
-                             {review.createdAt}
+                                 <p className='font-weight-bold'>{review.user.username}</p>
+                                 <p><Stars rating={review.reviewRating} /></p>
+                                <p>Created at: {new Date(review.createdAt).toISOString().replace('T', ' ').slice(0, 19)}  </p>
                          </div>
                          <div className='row'>
                              {review.reviewComment}
                          </div>
+                        
+                         {
+                           new Date(review.createdAt).getTime() != new Date(review.updatedAt).getTime()?
+                            ( <div className='row justify-content-end font-italic'>Update at: {new Date(review.updatedAt).toISOString().replace('T', ' ').slice(0, 19)}</div>): ''
+                         }
                      </div>
 
                  </div>

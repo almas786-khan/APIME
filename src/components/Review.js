@@ -60,7 +60,7 @@ const Review = ({ reviews }) => {
                 <td>{review.movie.title}</td>
                 <td>{review.reviewRating}</td>
                 <td>{review.reviewComment}</td>
-                <td>{review.createdAt}</td>
+                <td>{new Date(review.createdAt).toISOString().replace('T', ' ').slice(0, 19)}</td>
                 <td>{review.user.username}</td>
                 <td><form>
                   <input type='hidden' name='id' value={review._id} />

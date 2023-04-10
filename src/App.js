@@ -28,7 +28,7 @@ function App() {
 
       <MainNav use={use} setUse={setUse} />
 
-      <BrowserRouter>
+      <BrowserRouter basename='/client'>
         <Routes>
 
           <Route path='/' element={

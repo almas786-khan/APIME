@@ -21,7 +21,7 @@ const DocumentationPage = ({ use, setUse }) => {
   useEffect(() => {
     const initializePage = async () => {
       try {
-        const data = await axios.get('apime/user/userCheck')
+        const data = await axios.get('/apime/user/userCheck')
         setUse(data.data.user.username)
       }
       catch (error) {

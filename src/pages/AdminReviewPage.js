@@ -59,7 +59,7 @@ const AdminPage = ({ use, setUse }) => {
                 await setRequest()
             }
             else {
-                const { data: { reviews } } = await axios.get(`apime/reviews/movie/${value}`)
+                const { data: { reviews } } = await axios.get(`/apime/reviews/movie/${value}`)
                 setReviews(reviews);
                 setCurrentPage(1);
             }
@@ -100,7 +100,7 @@ const AdminPage = ({ use, setUse }) => {
 
         const initializePage = async () => {
             try {
-                const data = await axios.get('apime/user/userCheck')
+                const data = await axios.get('/apime/user/userCheck')
                 setUse(data.data.user.username)
                 await setRequest()
             }

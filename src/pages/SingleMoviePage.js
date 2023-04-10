@@ -171,7 +171,7 @@ const SingleMoviePage = ({ use, setUse }) => {
             await checkWatchList(movieId.current)
         }
         catch (error) {
-            console.log(error)
+            navigate('/error', { state: { error: error.response.data.msg, code: error.response.status } })
         }
     }
 
@@ -182,7 +182,7 @@ const SingleMoviePage = ({ use, setUse }) => {
             await checkWatchList(movieId.current)
         }
         catch (error) {
-            console.log(error)
+            navigate('/error', { state: { error: error.response.data.msg, code: error.response.status } })
         }
     }
 

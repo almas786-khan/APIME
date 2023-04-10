@@ -39,7 +39,7 @@ const MainNav = ({ use, setUse }) => {
     try {
       const result = await axios.get("/apime/user/logout");
       setUse('')
-      window.location.href = '/';
+      window.location.href = '/client/';
     }
     catch (error) {
       console.log(error)
@@ -49,7 +49,7 @@ const MainNav = ({ use, setUse }) => {
 
   const HandleAdmin = (e) => {
     e.preventDefault()
-    window.location.href = '/adminReviews';
+    window.location.href = '/client/adminReviews';
   }
   return (
     <nav>

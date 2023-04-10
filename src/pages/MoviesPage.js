@@ -67,7 +67,7 @@ function MoviesPage({ use, setUse }) {
         setMovies(movies)
         setTotalMovies(totalCount)
 
-        const data = await axios.get('apime/user/userCheck')
+        const data = await axios.get('/apime/user/userCheck')
         setUse(data.data.user.username)
       }
       catch (error) {

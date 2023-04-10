@@ -6,10 +6,10 @@ function AdminPanel() {
         <nav>
             <ul className='navbar-nav'>
                 <li className='nav-item'>
-                    <a className='nav-link' href="/adminReviews">Admin Reviews</a>
+                    <a className='nav-link' href="/client/adminReviews">Admin Reviews</a>
                 </li>
                 <li className='nav-item'>
-                    <a className='nav-link' href="/adminMovies">Admin Movies</a>
+                    <a className='nav-link' href="/client/adminMovies">Admin Movies</a>
                 </li>
 
             </ul>

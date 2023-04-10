@@ -80,7 +80,7 @@ function AdminMoviesPage({ use, setUse }) {
 
     const fetchUser = async () => {
         try {
-            const { data: { user: { username } } } = await axios.get('apime/user/userCheck')
+            const { data: { user: { username } } } = await axios.get('/apime/user/userCheck')
             setUse(username)
             return username
         }
